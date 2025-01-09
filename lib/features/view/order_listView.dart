@@ -1,0 +1,41 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../../../viewmodel/order_view_model.dart';
+import 'OrderCard.dart'; // Import the OrderCard widget
+
+class OrderListView extends StatelessWidget {
+  final OrderViewModel orderViewModel;
+  final String orderStatus;
+
+  OrderListView({required this.orderViewModel, required this.orderStatus});
+
+  @override
+  Widget build(BuildContext context) {
+    // Using Consumer to listen to the changes in OrderViewModel
+    return Consumer<OrderViewModel>(
+      builder: (context, orderViewModel, child) {
+        final filteredOrders = orderViewModel.filteredOrders;
+
+        // Debugging print statements
+        print("Filtered Orders Length: ${filteredOrders.length}");  // Check how many filtered orders there are
+        print("Order Status: $orderStatus");  // Check what order status is being passed
+
+        // Check if no orders are found and display a message
+        if (filteredOrders.isEmpty) {
+          return Center(
+            child: Text("No orders found for this status"),
+          );
+        }
+
+        return ListView.builder(
+          itemCount: filteredOrders.length,
+          itemBuilder: (context, index) {
+            final order = filteredOrders[index]; // Corrected variable name
+            return OrderCard(order: order); // Display each order using OrderCard
+          },
+        );
+      },
+    );
+  }
+  }
+

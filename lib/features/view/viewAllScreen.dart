@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hygi_health/common/Utils/app_colors.dart';
+import 'package:hygi_health/common/Utils/app_strings.dart';
 import 'package:hygi_health/data/model/category_model.dart'; // Import the Category model
 import '../../routs/Approuts.dart'; // Import your routes
 import 'ProductScreen.dart'; // Import your ProductCard widget
@@ -6,8 +8,7 @@ import 'ProductScreen.dart'; // Import your ProductCard widget
 class ViewAllScreen extends StatefulWidget {
   final List<Category> categories; // List of categories to display
 
-  // Constructor to accept a list of categories
-  const ViewAllScreen({required this.categories});
+  const ViewAllScreen({required this.categories, Key? key}) : super(key: key);
 
   @override
   _ViewAllScreenState createState() => _ViewAllScreenState();
@@ -16,7 +17,6 @@ class ViewAllScreen extends StatefulWidget {
 class _ViewAllScreenState extends State<ViewAllScreen> {
   @override
   Widget build(BuildContext context) {
-    // Ensure correct usage of the passed categories
     final categories = widget.categories;
 
     return Scaffold(
@@ -26,9 +26,9 @@ class _ViewAllScreenState extends State<ViewAllScreen> {
             Navigator.pop(context); // Handle back navigation
           },
           child: Container(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: Color(0xFF28A745), // Background color
+              color: AppColors.backgroundColor, // Background color
               shape: BoxShape.circle, // Makes it circular
             ),
             child: Image.asset(
@@ -40,23 +40,29 @@ class _ViewAllScreenState extends State<ViewAllScreen> {
           ),
         ),
         title: Text(
-          "All Categories",
-          style: TextStyle(
-            color: Colors.white, // Text color
+          AppStrings.allCategories,
+          style: const TextStyle(
+            color: Colors.black, // Text color
           ),
         ),
-        backgroundColor: Colors.green,
+        backgroundColor: AppColors.backgroundColor,
         actions: [
           Stack(
+            clipBehavior: Clip.none,
             children: [
-              IconButton(
-                icon: Icon(
-                  Icons.shopping_cart,
-                  color: Colors.white, // Cart icon color
-                ),
-                onPressed: () {
+              GestureDetector(
+                onTap: () {
                   print("Cart clicked");
                 },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Image.asset(
+                    'assets/cart.png', // Replace with your asset image path
+                    color: Colors.black, // Optional: Apply color filter to the image
+                    width: 38, // Adjust size as needed
+                    height: 38,
+                  ),
+                ),
               ),
               Positioned(
                 right: 8,
@@ -66,9 +72,9 @@ class _ViewAllScreenState extends State<ViewAllScreen> {
                   backgroundColor: Colors.red, // Badge background color
                   child: Text(
                     '3', // Number of items in the cart
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 12,
-                      color: Colors.white, // Text color for the number
+                      color: Colors.white, // Text color for the badge number
                     ),
                   ),
                 ),
@@ -80,9 +86,14 @@ class _ViewAllScreenState extends State<ViewAllScreen> {
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: categories.isEmpty
-            ? Center(child: Text("No categories available"))
+            ? const Center(
+          child: Text(
+            "No categories available",
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+          ),
+        )
             : GridView.builder(
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             crossAxisSpacing: 16,
             mainAxisSpacing: 16,
@@ -98,7 +109,7 @@ class _ViewAllScreenState extends State<ViewAllScreen> {
                   context,
                   AppRoutes.SUBCATEGORY,
                   arguments: {
-                    'categoryId': category.categoryId // Access category ID
+                    'categoryId': category.categoryId, // Pass category ID
                   },
                 );
               },

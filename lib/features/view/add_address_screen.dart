@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hygi_health/common/Utils/app_strings.dart';
 import 'package:hygi_health/features/view/BaseScreen.dart';
 import 'package:hygi_health/features/view/widgets/addresss_form_widget.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +11,7 @@ class AddAddressScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
-      title: 'Add New Address',
+      title: AppStrings.addAddress,
       cartItemCount: 3, // Example cart item count
       showCartIcon: false,
       showShareIcon: false,

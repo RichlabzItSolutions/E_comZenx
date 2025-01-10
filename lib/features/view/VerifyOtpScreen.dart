@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hygi_health/common/Utils/app_colors.dart';
+import 'package:hygi_health/common/Utils/app_strings.dart';
 import 'package:provider/provider.dart';
 import '../../routs/Approuts.dart'; // Import your AppRoutes file
 import '../../viewmodel/verify_otp_view_model.dart';
@@ -18,12 +20,15 @@ class VerifyOtpScreen extends StatelessWidget {
                   // Banner Image
                   Container(
                     width: double.infinity,
-                    height: 250,
-
+                    height: 350,
+                    child: Image.asset(
+                      'assets/banner.png',
+                      fit: BoxFit.cover,
+                    ),
                   ),
                   const SizedBox(height: 40),
                   const Text(
-                    "Verify Code",
+                    AppStrings.verifyOtp,
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       fontSize: 30,
@@ -33,13 +38,11 @@ class VerifyOtpScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 10),
                   const Text(
-                    "Enter the OTP sent to your mobile number",
-                    style: TextStyle(fontSize: 18),
+                    AppStrings.enterOtp,
+                    style: TextStyle(fontSize: 16),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 20),
-
-                  // OTP Input Section
                   // OTP Input Section
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16.0),
@@ -76,7 +79,7 @@ class VerifyOtpScreen extends StatelessWidget {
                                 ),
                               ),
                               filled: true,
-                              fillColor: const Color(0xFFF6F6F6),
+                              fillColor:AppColors.backgroundColor,
                             ),
                             onChanged: (value) {
                               if (value.isNotEmpty && index < 3) {
@@ -101,15 +104,15 @@ class VerifyOtpScreen extends StatelessWidget {
                     },
                     child: Text.rich(
                       TextSpan(
-                        text: "Don't receive the OTP? ",
+                        text:AppStrings.dontreciveOtp,
                         style: const TextStyle(fontSize: 16, color: Colors.black),
                         children: [
                           TextSpan(
-                            text: "Resend",
+                            text: AppStrings.resendOtp,
                             style: const TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Colors.blue,
+                              color: AppColors.primaryColor,
                             ),
                           ),
                         ],
@@ -141,7 +144,7 @@ class VerifyOtpScreen extends StatelessWidget {
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF1A73FC),
+                        backgroundColor: AppColors.primaryColor,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         shape: RoundedRectangleBorder(

@@ -3,6 +3,18 @@ import 'package:flutter/material.dart';
 import '../../../routs/Approuts.dart';
 
 class OrderConfirmationPage extends StatelessWidget {
+  final String orderId;
+  final String orderReference;
+  final double totalAmount;
+  final int totalItems;
+  const OrderConfirmationPage({
+    Key? key,
+    required this.orderId,
+    required this.orderReference,
+    required this.totalAmount,
+    required this.totalItems,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -12,9 +24,7 @@ class OrderConfirmationPage extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            Navigator.pushNamed(
-                context,
-                AppRoutes.HOME);
+            Navigator.pushNamed(context, AppRoutes.HOME);
           },
         ),
       ),
@@ -30,15 +40,15 @@ class OrderConfirmationPage extends StatelessWidget {
                   shape: BoxShape.circle,
                   color: Colors.blue.shade100,
                 ),
-                padding: EdgeInsets.all(20),
-                child: Icon(
+                padding: const EdgeInsets.all(20),
+                child: const Icon(
                   Icons.check_circle,
                   color: Colors.blue,
                   size: 50,
                 ),
               ),
-              SizedBox(height: 20),
-              Text(
+              const SizedBox(height: 20),
+              const Text(
                 'Your order is successfully done',
                 textAlign: TextAlign.center,
                 style: TextStyle(
@@ -47,34 +57,38 @@ class OrderConfirmationPage extends StatelessWidget {
                   color: Colors.black,
                 ),
               ),
-              SizedBox(height: 20),
-
-              SizedBox(height: 40),
+              const SizedBox(height: 20),
+              Text(
+                    'Order #: $orderReference\n'
+                    'Total Amount: ₹ $totalAmount\n'
+                    'Total Quantity: $totalItems',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey.shade600,
+                  height: 1.5,
+                ),
+              ),
+              const SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(
-                      context,
-                      AppRoutes.MYORDERS);
-                  // Navigate to the Order Details page
+                  Navigator.pushNamed(context, AppRoutes.MYORDERS);
                 },
                 style: ElevatedButton.styleFrom(
-                  minimumSize: Size(double.infinity, 50),
+                  minimumSize: const Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
                 ),
-                child: Text('View Order'),
+                child: const Text('View Order'),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               TextButton(
                 onPressed: () {
-                  Navigator.pushNamed(
-                      context,
-                      AppRoutes.HOME);
-                  // Navigate back to the home page
+                  Navigator.pushNamed(context, AppRoutes.HOME);
                 },
                 child: Text(
-                  'Back to home',
+                  'Back to Home',
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.grey.shade700,
@@ -87,11 +101,4 @@ class OrderConfirmationPage extends StatelessWidget {
       ),
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: OrderConfirmationPage(),
-  ));
 }

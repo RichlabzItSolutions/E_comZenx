@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:hygi_health/common/Utils/app_colors.dart';
 import 'package:hygi_health/data/model/verify_otp_response_model.dart';
 import 'package:hygi_health/viewmodel/base_view_ model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -68,7 +69,6 @@ class VerifyOtpViewModel extends BaseViewModel {
         print("Resend OTP clicked for mobile: $mobile");
         // Call your OTP resend API or logic here using mobile and userId
 
-        // After OTP is resent, start the timer again
         _startTimer();
 
         try {
@@ -132,7 +132,7 @@ class VerifyOtpViewModel extends BaseViewModel {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(_successMessage ?? 'OTP verified successfully'),
-            backgroundColor: Color(0xFF1A73FC),
+            backgroundColor: AppColors.primaryColor,
           ),
         );
 
@@ -166,18 +166,11 @@ class VerifyOtpViewModel extends BaseViewModel {
     }
   }
 
-
   String formatTime(int seconds) {
     int minutes = seconds ~/ 60;
     int remainingSeconds = seconds % 60;
     return '$minutes:${remainingSeconds.toString().padLeft(2, '0')}';
   }
-  //
-  // // Retrieve userId from SharedPreferences
-  // Future<String?> getUserId() async {
-  //   final prefs = await SharedPreferences.getInstance();
-  //   return prefs.getString('userId');
-  // }
 
   // Retrieve mobile number from SharedPreferences
   Future<String?> getMobile() async {

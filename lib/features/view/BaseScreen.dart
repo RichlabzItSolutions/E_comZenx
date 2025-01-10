@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hygi_health/common/Utils/app_colors.dart';
 
 class BaseScreen extends StatelessWidget {
   final String title; // Title for the AppBar
@@ -20,7 +21,7 @@ class BaseScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor:Color(0xFFF6F6F6),
+        backgroundColor:AppColors.toolbarbackgound,
         elevation: 1,
         leading: GestureDetector(
           onTap: () {
@@ -55,13 +56,13 @@ class BaseScreen extends StatelessWidget {
                   color: Colors.white, // Background color of the icon
                   shape: BoxShape.circle, // Circular shape
                   border: Border.all(
-                    color: Color(0xFFFFFFFF), // Border color set to #1A73FC
+                    color: Colors.white, // Border color set to #1A73FC
                     width: 2, // Border width
                   ),
                 ),
                 child: Icon(
                   Icons.share,
-                  color: Color(0xFF1A73FC), // Icon color to match the border
+                  color: AppColors.primaryColor, // Icon color to match the border
                 ),
               ),
               onPressed: () {

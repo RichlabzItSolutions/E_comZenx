@@ -12,13 +12,13 @@ class SubcategoryViewModel extends ChangeNotifier {
   List<Subcategory> subcategories = [];
   List<Product> products = [];
 
-  Future<void> fetchSubcategories(int categoryId) async {
+  Future<void> fetchSubcategories(int categoryId,String searchSubCategory) async {
     isLoading = true;
     notifyListeners();
 
     try {
       // Call the API using authService to get the response
-      final response = await authService.postCategorySubcategory(categoryId);
+      final response = await authService.postCategorySubcategory(categoryId,searchSubCategory);
 
       // Ensure the response is valid and contains the expected 'success' key
       // Safely extract the 'subcategories' list

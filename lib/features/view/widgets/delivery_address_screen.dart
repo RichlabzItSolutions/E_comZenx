@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hygi_health/common/Utils/app_colors.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/Utils/dottedborder.dart';
@@ -70,7 +71,7 @@ class DeliveryAddressScreen extends StatelessWidget {
                             viewModel.deliveryAddresses[index];
                             return ListTile(
                               leading: Icon(Icons.location_on,
-                                  color: Colors.blue),
+                                  color: AppColors.primaryColor),
                               title: Text(
                                 _getAddressTypeLabel(address.addressType),
                                 style: TextStyle(
@@ -91,7 +92,7 @@ class DeliveryAddressScreen extends StatelessWidget {
                                 value: index,
                                 groupValue:
                                 viewModel.selectedAddressIndex,
-                                activeColor: Colors.blue,
+                                activeColor: AppColors.primaryColor,
                                 onChanged: (value) => viewModel
                                     .selectDeliveryAddress(index),
                               ),
@@ -113,12 +114,12 @@ class DeliveryAddressScreen extends StatelessWidget {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Icon(Icons.add, color: Colors.blue),
+                                  Icon(Icons.add, color: AppColors.primaryColor),
                                   const SizedBox(width: 8),
                                   Text(
                                     "Add New Delivery Address",
                                     style: TextStyle(
-                                        fontSize: 14, color: Colors.blue),
+                                        fontSize: 14, color: AppColors.primaryColor),
                                   ),
                                 ],
                               ),
@@ -173,14 +174,14 @@ class DeliveryAddressScreen extends StatelessWidget {
                   child: ElevatedButton(
                   onPressed: isAddressSelected && isPaymentMethodSelected
                   ? () {
-                  Navigator.pushNamed(context, AppRoutes.SUCCESS);
+                    viewModel.confirmOrder(context);
                   // Handle "Place Order" action
                   }
                       : null, // Disable button if conditions are not met
                   style: ElevatedButton.styleFrom(
                   minimumSize: Size(double.infinity, 50), // Full width
                   primary: isAddressSelected && isPaymentMethodSelected
-                  ? Colors.blue
+                  ? AppColors.primaryColor
                       : Colors.grey, // Button color
                   shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
@@ -201,7 +202,6 @@ class DeliveryAddressScreen extends StatelessWidget {
       ),
     );
   }
-
   Widget _buildPaymentMethodContainer(
       PaymentMethod method, int index, DeliveryViewModel viewModel) {
     return GestureDetector(
@@ -216,7 +216,7 @@ class DeliveryAddressScreen extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: viewModel.paymentMethods[index].isSelected
-                ? Colors.blue
+                ? AppColors.primaryColor
                 : Colors.grey.shade300,
             width: 1,
           ),
@@ -229,7 +229,7 @@ class DeliveryAddressScreen extends StatelessWidget {
                   : Icons.credit_card,
               size: 24,
               color: viewModel.paymentMethods[index].isSelected
-                  ? Colors.blue
+                  ? AppColors.primaryColor
                   : Colors.grey,
             ),
             const SizedBox(width: 16),
@@ -239,7 +239,7 @@ class DeliveryAddressScreen extends StatelessWidget {
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
                 color: viewModel.paymentMethods[index].isSelected
-                    ? Colors.blue
+                    ? AppColors.primaryColor
                     : Colors.black,
               ),
             ),

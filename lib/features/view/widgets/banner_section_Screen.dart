@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../../common/Utils/app_colors.dart';
 import '../../../viewmodel/slide_view_model.dart';
  // Ensure this import path is correct
 
@@ -89,7 +90,7 @@ class _BannerSectionState extends State<BannerSection> {
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
                         color: viewModel.currentPage == index
-                            ? Colors.green
+                            ? AppColors.primaryColor
                             : Colors.grey,
                       ),
                     ),

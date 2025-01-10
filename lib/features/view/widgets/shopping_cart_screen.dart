@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hygi_health/common/Utils/app_colors.dart';
 import 'package:hygi_health/routs/Approuts.dart';
 import 'package:provider/provider.dart';
 import '../../../common/Utils/dotted_divider.dart';
@@ -139,7 +140,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                                       width: 30,
                                       height: 30,
                                       decoration: BoxDecoration(
-                                        color: Color(0xFF1A73FC),
+                                        color: AppColors.primaryColor,
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       alignment: Alignment.center,
@@ -154,7 +155,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                                       style: const TextStyle(
                                         fontSize: 18,
                                         fontWeight: FontWeight.bold,
-                                        color: Color(0xFF1A73FC),
+                                        color: AppColors.primaryColor,
                                       ),
                                     ),
                                   ),
@@ -167,7 +168,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                                       width: 30,
                                       height: 30,
                                       decoration: BoxDecoration(
-                                        color: Color(0xFF1A73FC),
+                                        color: AppColors.primaryColor,
                                         borderRadius: BorderRadius.circular(8),
                                       ),
                                       alignment: Alignment.center,
@@ -218,7 +219,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                 _buildSummaryRow('Delivery Charges:', '₹${viewModel.deliveryCharges}'),
                 _buildSummaryRow('Discount:', '₹${viewModel.discount}', textColor: Colors.red),
                 // Display the total GST
-                _buildSummaryRow('GST:', '₹${viewModel.gstRate.toStringAsFixed(2)}'),
+                // _buildSummaryRow('GST:', '₹${viewModel.gstRate.toStringAsFixed(2)}'),
 
                 DottedDivider(
                   dotSize: 1.0,

@@ -1,5 +1,7 @@
-import 'package:flutter/cupertino.dart';
+
 import 'package:flutter/material.dart';
+import 'package:hygi_health/common/Utils/app_colors.dart';
+import 'package:hygi_health/common/Utils/app_strings.dart';
 import 'package:provider/provider.dart';
 
 import '../../../viewmodel/AddressViewModel.dart';
@@ -29,30 +31,30 @@ class AddressFormWidget extends StatelessWidget {
             children: [
               TextFormField(
                 onChanged: viewModel.updateApartmentNumber,
-                decoration: const InputDecoration(labelText: "Apartment/House No."),
+                decoration: const InputDecoration(labelText: AppStrings.apartMentorHouseNo),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter apartment/house number';
+                    return AppStrings.pleaseenterApartMentHouseNumber;
                   }
                   return null;
                 },
               ),
               TextFormField(
                 onChanged: viewModel.updateStreetDetails,
-                decoration: const InputDecoration(labelText: "Apartment Name/Street Details"),
+                decoration: const InputDecoration(labelText: AppStrings.streetDetails),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter street details';
+                    return AppStrings.pleaseenterStreetDetails;
                   }
                   return null;
                 },
               ),
               TextFormField(
                 onChanged: viewModel.updateLandmark,
-                decoration: const InputDecoration(labelText: "Landmark"),
+                decoration: const InputDecoration(labelText:AppStrings.landmark ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a landmark';
+                    return AppStrings.pleaseenterLandmark;
                   }
                   return null;
                 },
@@ -62,10 +64,10 @@ class AddressFormWidget extends StatelessWidget {
                   Expanded(
                     child: TextFormField(
                       onChanged: viewModel.updateFirstName,
-                      decoration: const InputDecoration(labelText: "First Name"),
+                      decoration: const InputDecoration(labelText: AppStrings.firstName),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter first name';
+                          return AppStrings.pleaseenterFirstName;
                         }
                         return null;
                       },
@@ -75,10 +77,10 @@ class AddressFormWidget extends StatelessWidget {
                   Expanded(
                     child: TextFormField(
                       onChanged: viewModel.updateLastName,
-                      decoration: const InputDecoration(labelText: "Last Name"),
+                      decoration: const InputDecoration(labelText: AppStrings.lastName),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter last name';
+                          return AppStrings.pleaseenterLastName;
                         }
                         return null;
                       },
@@ -90,13 +92,13 @@ class AddressFormWidget extends StatelessWidget {
                 onChanged: viewModel.updateMobileNumber,
                 keyboardType: TextInputType.phone,
                 maxLength: 10,
-                decoration: const InputDecoration(labelText: "Mobile Number"),
+                decoration: const InputDecoration(labelText: AppStrings.mobile),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter mobile number';
+                    return AppStrings.pleaseEnterMobileNumber;
                   }
                   if (value.length != 10) {
-                    return 'Mobile number must be 10 digits';
+                    return AppStrings.pleaseEnterValidMobileNumber;
                   }
                   return null;
                 },
@@ -113,7 +115,6 @@ class AddressFormWidget extends StatelessWidget {
                     hint: const Text("Select State"),
                     items: viewModel.availableStates.map((state) {
                       final stateName = state['stateName'];
-                      final stateId = state['stateId'];
                       return DropdownMenuItem<String>(
                         value: stateName,
                         child: Text(stateName),
@@ -127,11 +128,11 @@ class AddressFormWidget extends StatelessWidget {
                       }
                     },
                     decoration: const InputDecoration(
-                      labelText: "State",
+                      labelText: AppStrings.state,
                     ),
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Please select a state';
+                        return  AppStrings.pleaseenterState;
                       }
                       return null;
                     },
@@ -152,10 +153,10 @@ class AddressFormWidget extends StatelessWidget {
               const SizedBox(height: 16),
               TextFormField(
                 onChanged: viewModel.updateArea,
-                decoration: const InputDecoration(labelText: "Area"),
+                decoration: const InputDecoration(labelText: AppStrings.area),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter area';
+                    return AppStrings.pleaseenterArea;
                   }
                   return null;
                 },
@@ -166,13 +167,13 @@ class AddressFormWidget extends StatelessWidget {
                 onChanged: viewModel.updatePincode,
                 keyboardType: TextInputType.number,
                 maxLength: 6,
-                decoration: const InputDecoration(labelText: "Pincode"),
+                decoration: const InputDecoration(labelText: AppStrings.pincode),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter pincode';
+                    return AppStrings.pleaseenterPincode;
                   }
                   if (value.length != 6) {
-                    return 'Pincode must be 6 digits';
+                    return AppStrings.pleaseenterPincode;
                   }
                   return null;
                 },
@@ -190,8 +191,8 @@ class AddressFormWidget extends StatelessWidget {
               CheckboxListTile(
                 value: viewModel.address.isDefault,
                 onChanged: (value) => viewModel.toggleDefaultAddress(value!),
-                title: const Text("Set as default Address"),
-                activeColor: Colors.green,
+                title: const Text(AppStrings.defaultAddress),
+                activeColor: AppColors.primaryColor,
                 checkColor: Colors.white,
               ),
               const SizedBox(height: 16),
@@ -206,7 +207,7 @@ class AddressFormWidget extends StatelessWidget {
                   },
                   style: ElevatedButton.styleFrom(
                     foregroundColor: Colors.white,
-                    backgroundColor: Colors.green,
+                    backgroundColor: AppColors.primaryColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8.0),
                     ),

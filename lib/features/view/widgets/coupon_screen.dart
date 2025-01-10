@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../../../common/Utils/app_colors.dart';
 import '../../../viewmodel/coupon_view_model.dart';
 
 class CouponScreen extends StatelessWidget {
@@ -20,7 +21,7 @@ class CouponScreen extends StatelessWidget {
               leading: Container(
                 width: 60,
                 height: double.infinity, // Ensure the container fills the parent's height
-                color: Color(0xFF1A73FC),
+                color: AppColors.primaryColor,
                 child: Center(
                   child: RotatedBox(
                     quarterTurns: 3, // Rotates the text 90 degrees

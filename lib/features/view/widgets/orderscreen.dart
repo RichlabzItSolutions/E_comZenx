@@ -34,7 +34,7 @@ class OrderTabsView extends StatelessWidget {
                   String selectedTab = index == 0
                       ? 'Active'
                       : index == 1
-                      ? 'Completed'
+                      ? 'Delivered'
                       : 'Cancelled';
                   orderViewModel.setTab(selectedTab); // This triggers the tab change
                 },

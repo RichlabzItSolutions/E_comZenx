@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hygi_health/common/Utils/app_strings.dart';
 import 'package:provider/provider.dart';
 import 'package:hygi_health/features/view/widgets/horizontal_category_list.dart';
 import 'package:hygi_health/features/view/widgets/product_list_view.dart'; // If needed for ProductListView
@@ -18,13 +19,14 @@ class CategoryView extends StatefulWidget {
 
 class _CategoryViewState extends State<CategoryView> {
   late int currentCategoryId;
-
+  late String searchSubCategory;
 
   @override
   void initState() {
     super.initState();
     // Initialize the current categoryId with the one passed from the constructor
     currentCategoryId = widget.categoryId;
+    searchSubCategory="";
     // Fetch subcategories when the widget is initialized
     _fetchSubcategories();
   }
@@ -44,7 +46,7 @@ class _CategoryViewState extends State<CategoryView> {
   void _fetchSubcategories() {
     final subcategoryViewModel = Provider.of<SubcategoryViewModel>(context, listen: false);
     // Ensure subcategories are fetched for the current categoryId
-    subcategoryViewModel.fetchSubcategories(currentCategoryId);
+    subcategoryViewModel.fetchSubcategories(currentCategoryId,searchSubCategory);
   }
 
   @override
@@ -52,7 +54,7 @@ class _CategoryViewState extends State<CategoryView> {
     final subcategoryViewModel = Provider.of<SubcategoryViewModel>(context);
 
     return BaseScreen(
-      title: 'Categories All',
+      title: AppStrings.allCategories,
       cartItemCount: 3, // Set the number of cart items
       showCartIcon: true,
       showShareIcon: false,

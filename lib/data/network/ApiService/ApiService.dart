@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
+import 'package:hygi_health/data/model/confirmorder.dart';
 import 'package:hygi_health/data/model/order_model.dart';
 import 'package:hygi_health/data/model/product_view.dart';
 import 'package:hygi_health/data/model/removecartItemrequest.dart';
@@ -12,11 +13,10 @@ import '../../../common/constants/constans.dart';
 import '../../model/CartResponse.dart';
 import '../../model/DeliveryAddress.dart';
 import '../../model/category_model.dart';
+import '../../model/confirm_order_response.dart';
 import '../../model/product_model.dart';
 import '../../model/request_user_data.dart';
 
-
-import '../../model/subcategory_list_response.dart';
 import '../../model/subcategory_model.dart';
 import '../../model/verify_otp_response_model.dart';
 
@@ -559,11 +559,12 @@ class ApiService {
 
   // Method to fetch the list of subcategories
 
-  Future<List<Subcategory>> postCategorySubcategory(int categoryId) async {
+  Future<List<Subcategory>> postCategorySubcategory(int categoryId, String searchSubCategory) async {
     try {
       // Create the request body with categoryId
       final Map<String, dynamic> requestBody = {
         'categoryId': categoryId,
+        'searchSubCategory': searchSubCategory ?? ' ',  // If searchSubCategory is null, use an empty string
       };
 
       final String url = '${AppConstants.baseUrl}fetchSubCategories';
@@ -578,8 +579,7 @@ class ApiService {
       if (response.statusCode == 200) {
         // Check if response data is not null
         if (response.data != null && response.data['success'] == true) {
-          final List subcategoryData = response.data['data']['subcategories'] ??
-              [];
+          final List subcategoryData = response.data['data']['subcategories'] ?? [];
           return subcategoryData
               .map((item) => Subcategory.fromJson(item))
               .toList();
@@ -588,8 +588,7 @@ class ApiService {
         }
       } else {
         // Handle non-200 status codes
-        throw Exception(
-            'Failed to post data. Status code: ${response.statusCode}');
+        throw Exception('Failed to post data. Status code: ${response.statusCode}');
       }
     } catch (e) {
       // Log the error and rethrow it for handling in the calling code
@@ -597,6 +596,7 @@ class ApiService {
       throw Exception('Error during POST request: $e');
     }
   }
+
 
   Future<List<Order>> fetchOrders(int userId, String orderStatus) async {
     // Construct the API URL with query parameters
@@ -620,9 +620,30 @@ class ApiService {
       throw Exception('Failed to load orders');
     }
   }
+// confirm Order
+  Future<ConfirmOrderResponse> confirmOrder(ConfirmOrder order) async {
+    final String url = '${AppConstants.baseUrl}confirmOrder';
+    final response = await _dio.post(
+        url,
+      data: jsonEncode(order.toJson()),
+    );
 
+    // Check for success or failure
+    if (response.statusCode == 200) {
+      // If the server returns a 200 OK response, parse the JSON
+      return ConfirmOrderResponse.fromJson((response.data));
+    } else {
+      // Handle errors or unexpected responses appropriately
+      return ConfirmOrderResponse(
+        success: false,
+        message: 'Error: Unable to confirm order',
+        data: null,
+      );
+    }
+  }
 
 }
+
 
 
 

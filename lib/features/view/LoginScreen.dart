@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:hygi_health/common/Utils/app_colors.dart';
+import 'package:hygi_health/common/Utils/app_strings.dart';
 import 'package:provider/provider.dart';
 import '../../routs/Approuts.dart';
 import '../../viewmodel/login_view_model.dart';
@@ -23,7 +25,11 @@ class LoginScreen extends StatelessWidget {
                     // Full-width image banner
                     SizedBox(
                       width: double.infinity,
-                      height: 250,
+                      height: 350,
+                      child: Image.asset(
+                        'assets/banner.png',
+                        fit: BoxFit.cover,
+                      ),
                     ),
                     SizedBox(height: 80),
                     // Apply padding only to the "Login" and below layout
@@ -34,16 +40,18 @@ class LoginScreen extends StatelessWidget {
                         children: [
                           // Login Text
                           Text(
-                            "Login",
+                            AppStrings.login,
                             textAlign: TextAlign.left,
                             style: TextStyle(
-                                fontSize: 30,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black),
+                              fontSize: 36,
+                              fontWeight: FontWeight.w800,  // Equivalent to ExtraBold
+                              fontFamily: 'Manrope',  // Ensure this matches the font family in pubspec.yaml
+                              color: Colors.black,
+                            ),
                           ),
                           SizedBox(height: 8),
                           Text(
-                            "Please enter mobile number to login/Signup",
+                            AppStrings.pleasenetermobile,
                             textAlign: TextAlign.center,
                             style: TextStyle(fontSize: 16, color: Colors.black54),
                           ),
@@ -62,11 +70,11 @@ class LoginScreen extends StatelessWidget {
                                   height: 16,
                                 ),
                               ),
-                              hintText: 'Enter Mobile Number',
+                              hintText: AppStrings.enterMobileNumber,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
-                                  color: Colors.grey, // Set border color to gray
+                                  color: AppColors.textbg, // Set border color to gray
                                   width: 1.0, // Set the width of the border
                                 ),
                               ),
@@ -80,12 +88,12 @@ class LoginScreen extends StatelessWidget {
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(8),
                                 borderSide: BorderSide(
-                                  color: Colors.blue, // Blue border when the field is focused
+                                  color: AppColors.primaryColor, // Blue border when the field is focused
                                   width: 2.0,
                                 ),
                               ),
                               filled: true,
-                              fillColor: Colors.white,
+                              fillColor:AppColors.backgroundColor,
                               contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 20),
                               counterText: '',
                             ),
@@ -104,11 +112,10 @@ class LoginScreen extends StatelessWidget {
                                 await viewModel.login();
                                 // Handle successful login
                                 if (viewModel.successMessage != null) {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(
+                                  ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text(viewModel.successMessage!),
-                                      backgroundColor: Color(0xFF1A73FC),
+                                      backgroundColor: AppColors.primaryColor,
                                     ),
                                   );
                                   Navigator.pushNamed(
@@ -126,18 +133,16 @@ class LoginScreen extends StatelessWidget {
                                 }
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: const Color(0xFF1A73FC),
+                                backgroundColor:  AppColors.primaryColor,
                                 foregroundColor: Colors.white,
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 14, horizontal: 40),
+                                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 40),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
                               ),
                               child: const Text(
-                                'Send OTP',
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
+                                AppStrings.sentOtp,
+                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                             ),
                           ),
@@ -146,11 +151,11 @@ class LoginScreen extends StatelessWidget {
                           RichText(
                             textAlign: TextAlign.center,
                             text: TextSpan(
-                              text: "By proceeding, I agree to ",
+                              text: AppStrings.byproceed,
                               style: TextStyle(fontSize: 14, color: Colors.black54), // Default text style
                               children: [
                                 TextSpan(
-                                  text: "Terms and Conditions",
+                                  text: AppStrings.termsAndConditions,
                                   style: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
                                 ),
                                 TextSpan(
@@ -158,12 +163,13 @@ class LoginScreen extends StatelessWidget {
                                   style: TextStyle(color: Colors.black54), // Default style for '&'
                                 ),
                                 TextSpan(
-                                  text: " \t\nPrivacy Policy",
-                                  style: TextStyle(fontSize: 14, color: Colors.black54),
+                                  text: AppStrings.privacyPolicy,
+                                  style: TextStyle(fontSize: 15, color: Colors.black54),
                                 ),
                               ],
                             ),
                           ),
+                          SizedBox(height: 20),
                           // Display error message if any
                           if (viewModel.errorMessage.isNotEmpty)
                             Text(
@@ -171,18 +177,10 @@ class LoginScreen extends StatelessWidget {
                               style: const TextStyle(color: Colors.red),
                             ),
                           // Display loading indicator if isLoading is true
-                          // Loading indicator
-                          Consumer<LoginViewModel>( // Wrap with Consumer to access viewModel
-                            builder: (context, viewModel, child) {
-                              if (viewModel.isLoading) {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              } else {
-                                return const SizedBox.shrink(); // Return empty widget when not loading
-                              }
-                            },
-                          ),
+                          if (viewModel.isLoading)
+                            const Center(
+                              child: CircularProgressIndicator(),
+                            ),
                         ],
                       ),
                     ),

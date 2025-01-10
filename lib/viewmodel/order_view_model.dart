@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../data/model/order_model.dart';  // Replace with your actual Order model
 import 'package:hygi_health/common/globally.dart';  // Assuming this is where authService is
 
+
 class OrderViewModel extends ChangeNotifier {
   List<Order> _orders = [];
   List<Order> get orders => _orders;
@@ -12,24 +13,28 @@ class OrderViewModel extends ChangeNotifier {
 
   // Map for status
   Map<String, String> orderStatusMap = {
-    'Active': '',        // Empty string for Active status
+    'Active': '1',        // Set default status as '1' for Active
     'Delivered': '4',    // Delivered status
     'Cancelled': '5',    // Cancelled status
   };
+
+  // Constructor - Call fetchOrdersForTab() initially
+  OrderViewModel() {
+    fetchOrdersForTab();  // Fetch orders when the view model is initialized
+  }
 
   void setTab(String tab) {
     _selectedTab = tab;
     notifyListeners();
     fetchOrdersForTab(); // Fetch orders based on the selected tab
   }
+
   // Filter orders based on the selected tab (e.g., 'Active', 'Delivered', 'Cancelled')
   List<Order> get filteredOrders {
-    String status = orderStatusMap[_selectedTab] ?? '1'; // Default to '' (Active) if null
-    final filtered = _orders.where((order) => 1 == 1).toList();
-
+    String status = orderStatusMap[_selectedTab] ?? '1'; // Default to '1' (Active) if null
+    final filtered = _orders.where((order) => order.orderStatus == int.tryParse(status)).toList();
     return filtered;
   }
-  // Filter orders based on the selected tab (e.g., 'Active', 'Delivered', 'Cancelled')
 
   // Fetch orders from the API using the authService.fetchOrders method
   Future<void> fetchOrdersForTab() async {
@@ -40,15 +45,11 @@ class OrderViewModel extends ChangeNotifier {
       if (userIdString != null) {
         // Convert userId to int
         int userId = int.tryParse(userIdString) ?? 0; // Default to 0 if parsing fails
-        String status = orderStatusMap[_selectedTab] ?? ''; // Get the status for the selected tab
+        String status = orderStatusMap[_selectedTab] ?? '1'; // Get the status for the selected tab
 
         // Fetch orders based on the selected tab (Active, Delivered, Cancelled)
         final fetchedOrders = await authService.fetchOrders(userId, status); // Pass the status correctly
-        if (fetchedOrders != null) {
-          _orders = fetchedOrders;
-        } else {
-          _orders = [];
-        }
+        _orders = fetchedOrders;
       } else {
         _orders = [];
       }
@@ -60,3 +61,4 @@ class OrderViewModel extends ChangeNotifier {
     }
   }
 }
+

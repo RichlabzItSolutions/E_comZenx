@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:hygi_health/common/Utils/app_strings.dart';
 import 'package:hygi_health/features/view/widgets/banner_section_Screen.dart';
 import 'package:provider/provider.dart';
+import '../../common/Utils/app_colors.dart';
 import '../../routs/Approuts.dart'; // Update the import for your routes
+
 import '../../viewmodel/category_view_model.dart';
 import 'ProductScreen.dart';
-import 'category_view.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -14,27 +16,12 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final PageController _pageController = PageController();
-  int _currentPage = 0;
+
   late Timer _timer;
   late List<DateTime> daysOfWeek;
   DateTime selectedDate = DateTime.now();
-
   // Bottom Navigation Bar
   int _selectedIndex = 0; // To track the selected tab
-
-  @override
-  void initState() {
-    super.initState();
-    _generateWeekDays();
-
-  }
-
-  // Generate the days of the current week starting from Monday
-  void _generateWeekDays() {
-    final DateTime today = DateTime.now();
-    final DateTime startOfWeek = today.subtract(Duration(days: today.weekday - 1)); // Monday as the first day
-    daysOfWeek = List.generate(7, (index) => startOfWeek.add(Duration(days: index)));
-  }
 
   // Handle navigation bar item tap
   void _onNavTapped(int index) {
@@ -64,15 +51,8 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.green.shade50,
       body: SafeArea(
         child: _selectedIndex == 0
-            ? HomeContent(
-          daysOfWeek: daysOfWeek,
-          selectedDate: selectedDate,
-          onDateSelected: (date) {
-            setState(() {
-              selectedDate = date;
-            });
-          },
-        )
+            ? HomeContent()
+
             : Center(
           child: Text(
             _getPageMessage(_selectedIndex), // Get message dynamically
@@ -83,12 +63,12 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onNavTapped,
-        selectedItemColor:Color(0xFF1A73FC),
+        selectedItemColor:AppColors.primaryColor,
         unselectedItemColor: Colors.grey,
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: "Home",
+            label: AppStrings.homeTab,
           ),
           BottomNavigationBarItem(
             icon: SizedBox(
@@ -99,7 +79,7 @@ class _HomePageState extends State<HomePage> {
                 fit: BoxFit.contain,
               ),
             ),
-            label: "My Cart",
+            label: AppStrings.cartTab,
           ),
           BottomNavigationBarItem(
             icon: SizedBox(
@@ -110,11 +90,11 @@ class _HomePageState extends State<HomePage> {
                 fit: BoxFit.contain,
               ),
             ),
-            label: "Wallet",
+            label: AppStrings.walletTab,
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),
-            label: "My Orders",
+            label: AppStrings.myOrderTab,
           ),
           BottomNavigationBarItem(
             icon: SizedBox(
@@ -125,7 +105,7 @@ class _HomePageState extends State<HomePage> {
                 fit: BoxFit.contain,
               ),
             ),
-            label: "Account",
+            label: AppStrings.accountTab,
           ),
         ],
       ),
@@ -147,20 +127,9 @@ class _HomePageState extends State<HomePage> {
 }
 
 class HomeContent extends StatefulWidget {
-  final List<DateTime> daysOfWeek;
-  final DateTime selectedDate;
-  final Function(DateTime) onDateSelected;
-
-  const HomeContent({
-    required this.daysOfWeek,
-    required this.selectedDate,
-    required this.onDateSelected,
-  });
-
   @override
   _HomeContentState createState() => _HomeContentState();
 }
-
 class _HomeContentState extends State<HomeContent> {
   @override
   Widget build(BuildContext context) {
@@ -193,12 +162,12 @@ class _HomeContentState extends State<HomeContent> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'All Categories',
-                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black87),
+                            AppStrings.allCategories,
+                            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.black),
                           ),
                           SizedBox(height: 4),
                           Text(
-                            'Buy from any category',
+                            AppStrings.byfromAnyCategory,
                             style: TextStyle(fontSize: 14, color: Colors.black54),
                           ),
                         ],
@@ -215,7 +184,7 @@ class _HomeContentState extends State<HomeContent> {
                         },
                         child: Row(
                           children: [
-                            Text('View All', style: TextStyle(fontSize: 14, color: Colors.green)),
+                            Text(AppStrings.viewAll, style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold, color:AppColors.primaryColor)),
                             Image.asset('assets/right.png', height: 16, width: 16, fit: BoxFit.contain),
                           ],
                         ),
@@ -274,34 +243,40 @@ class HeaderSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Color(0xFFE1F5D5),
+      color: AppColors.secondaryColor,
       padding: const EdgeInsets.all(16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Row for logo and location
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Image.asset(
-                'assets/logo.png', // Replace with your logo image
-                height: 100, // Fixed height
-                width: 150,  // Adjust width as needed
-                fit: BoxFit.contain,  // Ensures the image scales correctly without distortion
-              ),
-              Row(
-                children: [
-                  Icon(Icons.location_on, color: Colors.black),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text(
-                      'Hyderabad',
-                      style: TextStyle(fontSize: 16, color: Colors.black),
-                    ),
+          // Container for row with increased height
+          Container(
+            height: 80, // Increase the height of the row here
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Shop Name with bold styling instead of image
+                Text(
+                  'Shop Name',  // Replace with your actual shop name
+                  style: TextStyle(
+                    fontSize: 24,  // Adjust the font size as needed
+                    fontWeight: FontWeight.bold, // Make the shop name bold
+                    color: Colors.black,  // Set the text color
                   ),
-                ],
-              ),
-            ],
+                ),
+                Row(
+                  children: [
+                    Icon(Icons.location_on, color: Colors.black),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Text(
+                        'Hyderabad',
+                        style: TextStyle(fontSize: 16, color: Colors.black),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
           SizedBox(height: 20),
           // Row for search bar and shopping cart icon
@@ -310,7 +285,7 @@ class HeaderSection extends StatelessWidget {
               Expanded(
                 child: TextField(
                   decoration: InputDecoration(
-                    hintText: 'Search for Idly Batter',
+                    hintText: AppStrings.searchProduct,
                     suffixIcon: Icon(Icons.search),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(8),
@@ -344,7 +319,7 @@ class HeaderSection extends StatelessWidget {
                     right: -6, // Adjust horizontal position to prevent it from being cut off
                     child: Container(
                       decoration: BoxDecoration(
-                        color: Colors.red, // Badge color
+                        color: AppColors.errorColor, // Badge color
                         borderRadius: BorderRadius.circular(12), // Ensure the badge is rounded
                       ),
                       width: 20, // Fixed width of the badge
@@ -362,236 +337,19 @@ class HeaderSection extends StatelessWidget {
                     ),
                   ),
                 ],
-              )
-
-
-
-
-
-
-              ,
+              ),
             ],
           ),
         ],
       ),
     );
+
+
   }
 }
 
-class WeeklyCalendar extends StatelessWidget {
-  final List<DateTime> daysOfWeek;
-  final DateTime selectedDate;
-  final Function(DateTime) onDateSelected;
 
-  const WeeklyCalendar({
-    required this.daysOfWeek,
-    required this.selectedDate,
-    required this.onDateSelected,
-  });
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Color(0xFFE1F5D5), // Background color for the container
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Column(
-        children: [
-          // Week Calendar Section
-          SizedBox(
-            height: 100, // Height for the calendar
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              physics: BouncingScrollPhysics(),
-              itemCount: daysOfWeek.length,
-              itemBuilder: (context, index) {
-                final DateTime currentDay = daysOfWeek[index];
 
-                // Format day and date
-                final String dayName = [
-                  'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'
-                ][currentDay.weekday - 1];
-                final String dateNumber = currentDay.day.toString();
 
-                // Check if the current day is today
-                final bool isToday = currentDay.day == DateTime.now().day &&
-                    currentDay.month == DateTime.now().month &&
-                    currentDay.year == DateTime.now().year;
 
-                // Check if this date is selected
-                final bool isSelected = currentDay.year == selectedDate.year &&
-                    currentDay.month == selectedDate.month &&
-                    currentDay.day == selectedDate.day;
-
-                return GestureDetector(
-                  onTap: () {
-                    onDateSelected(currentDay); // Trigger the callback on date tap
-                  },
-                  child: Container(
-                    width: 80, // Fixed width for each day item
-                    margin: const EdgeInsets.symmetric(horizontal: 8),
-                    decoration: BoxDecoration(
-                      color: isSelected ? Colors.green : Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(12),
-                      border: isToday
-                          ? Border.all(color: Colors.orange, width: 2)
-                          : null,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          dayName,
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                            color: isSelected ? Colors.white : Colors.black,
-                          ),
-                        ),
-                        SizedBox(height: 4),
-                        Text(
-                          dateNumber,
-                          style: TextStyle(
-                            fontSize: 14,
-                            color: isSelected ? Colors.white : Colors.black,
-                          ),
-                        ),
-                        if (isToday)
-                          Padding(
-                            padding: const EdgeInsets.only(top: 4.0),
-                            child: Text(
-                              "Today",
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: Colors.orange,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-          SizedBox(height: 16),
-          // Status Section
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Delivered Status
-                _statusWidget("Delivered", Colors.green),
-                // Upcoming Status
-                _statusWidget("Upcoming", Colors.blue),
-                // Vacation Status
-                _statusWidget("Vacation", Colors.orange),
-                // Hold Status
-                _statusWidget("Hold", Colors.red),
-              ],
-            ),
-          ),
-          SizedBox(height: 16),
-          // Single Row with White Background, Padding, and Rounded Border
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 10.0),
-            decoration: BoxDecoration(
-              color: Colors.white, // White background for the row
-              borderRadius: BorderRadius.circular(16), // Rounded corners
-            ),
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            // Padding for left and right
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Calendar Icon and Text
-                Row(
-                  children: [
-                    Image.asset(
-                      'assets/calendar.png', // Replace with your logo image
-                      height: 24, // Fixed height
-                      width: 24,  // Adjust width as needed
-                      fit: BoxFit.contain,  // Ensures the image scales correctly without distortion
-                    ),
-                    SizedBox(width: 8),
-                    Text(
-                      'There is no Order Scheduled for \n this Today',
-                      style: TextStyle(fontSize: 13, color: Colors.black),
-                      softWrap: true, // Allow text to wrap to the next line
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ],
-                ),
-                // Add Product Button
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, AppRoutes.CategoryViewAll);
-                    // Handle adding product functionality
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green, // Background color
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 12),
-                  ),
-                  child: Text(
-                    ' + Add Product',
-                    style: TextStyle(fontSize: 16, color: Colors.white),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// Helper widget to create status indicators with text
-Widget _statusWidget(String statusText, Color color) {
-  return Row(
-    children: [
-      // Status color indicator
-      Container(
-        width: 10,
-        height: 10,
-        decoration: BoxDecoration(
-          color: color,
-          shape: BoxShape.circle,
-        ),
-      ),
-      SizedBox(width: 4), // Space between circle and text
-      // Status text
-      Text(
-        statusText,
-        style: TextStyle(
-          fontSize: 14,
-          color: Colors.black54,
-        ),
-      ),
-    ],
-  );
-}
-
-extension DateTimeExtension on DateTime {
-  String weekdayString() {
-    switch (this.weekday) {
-      case DateTime.monday:
-        return 'Mon';
-      case DateTime.tuesday:
-        return 'Tue';
-      case DateTime.wednesday:
-        return 'Wed';
-      case DateTime.thursday:
-        return 'Thu';
-      case DateTime.friday:
-        return 'Fri';
-      case DateTime.saturday:
-        return 'Sat';
-      case DateTime.sunday:
-        return 'Sun';
-      default:
-        return '';
-    }
-  }
-}

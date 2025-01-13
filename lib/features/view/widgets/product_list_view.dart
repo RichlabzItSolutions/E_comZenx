@@ -1,18 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:hygi_health/viewmodel/subcategory_view_model.dart';
 import 'package:provider/provider.dart';
-import 'package:hygi_health/viewmodel/category_view_model.dart';
-import 'package:hygi_health/features/view/product_item.dart';
+import 'package:hygi_health/features/view/product_item.dart'; // Assuming you have a ProductItem widget
 
 class ProductListView extends StatelessWidget {
+  final String searchTerm;
+  ProductListView({required this.searchTerm});
   @override
   Widget build(BuildContext context) {
-    final categoryViewModel = Provider.of<SubcategoryViewModel>(context);
+    final subcategoryViewModel = Provider.of<SubcategoryViewModel>(context);
+    // Filter products based on searchTerm
+    final filteredProducts = subcategoryViewModel.products.where((product) {
+      return product.productTitle.toLowerCase().contains(searchTerm.toLowerCase());
+    }).toList();
+
     return ListView.builder(
-      itemCount: categoryViewModel.products.length,
+      itemCount: filteredProducts.length,
       itemBuilder: (context, index) {
-        final product = categoryViewModel.products[index];
-        return ProductItem(product: product);
+        return ProductItem(product: filteredProducts[index]);
       },
     );
   }

@@ -52,6 +52,7 @@ class User {
   final String otp;
   final int otpStatus;
   final int status;
+  final int  location_id;
   final String? deviceToken;
   final String? emailVerifiedAt;
   final String createdAt;
@@ -63,6 +64,7 @@ class User {
     this.email,
     required this.mobile,
     required this.otp,
+    required this.location_id,
     required this.otpStatus,
     required this.status,
     this.deviceToken,
@@ -79,11 +81,12 @@ class User {
       mobile: json['mobile'],
       otp: json['otp'],
       otpStatus: json['otp_status'],
+      location_id: json['location_id'],
+      updatedAt: json['updated_at'],
       status: json['status'],
       deviceToken: json['device_token'],
       emailVerifiedAt: json['email_verified_at'],
       createdAt: json['created_at'],
-      updatedAt: json['updated_at'],
     );
   }
 
@@ -94,6 +97,7 @@ class User {
       'email': email,
       'mobile': mobile,
       'otp': otp,
+      'location_id': location_id,
       'otp_status': otpStatus,
       'status': status,
       'device_token': deviceToken,

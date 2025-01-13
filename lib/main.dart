@@ -4,6 +4,7 @@ import 'package:hygi_health/viewmodel/AddressViewModel.dart';
 import 'package:hygi_health/viewmodel/base_view_%20model.dart';
 import 'package:hygi_health/viewmodel/category_view_model.dart';
 import 'package:hygi_health/viewmodel/delivery_address_viewmodel.dart';
+import 'package:hygi_health/viewmodel/location_view_model.dart';
 import 'package:hygi_health/viewmodel/myaccount_view_Model.dart';
 import 'package:hygi_health/viewmodel/notification_viewmodel.dart';
 import 'package:hygi_health/viewmodel/order_view_model.dart';
@@ -32,6 +33,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => AddressViewModel()),
         ChangeNotifierProvider(create: (_) => SubcategoryViewModel()),
         ChangeNotifierProvider(create: (_) =>OrderViewModel()),
+        ChangeNotifierProvider(create: (_) =>LocationViewModel()),
         // Add other providers here if needed
       ],
       child: MyApp(),

@@ -41,6 +41,8 @@ class AppRoutes {
   static const String MYORDERS = '/OrderTabsView';
   static const String SUCCESS = '/OrderConfirmationPage';
 
+   // Add more routes as needed
+
   static Map<String, WidgetBuilder> get routes {
     return {
       AppRoutes.SPLASH: (context) => SplashScreen(),
@@ -104,7 +106,6 @@ class AppRoutes {
           totalItems: totalItems,
         );
       },
-
 
 
       // Define other routes here

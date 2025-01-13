@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:hygi_health/common/Utils/app_strings.dart';
 import 'package:provider/provider.dart';
 import 'package:hygi_health/features/view/widgets/horizontal_category_list.dart';
-import 'package:hygi_health/features/view/widgets/product_list_view.dart'; // If needed for ProductListView
-import 'package:hygi_health/viewmodel/subcategory_view_model.dart'; // Use SubcategoryViewModel
+import 'package:hygi_health/features/view/widgets/product_list_view.dart'; // Use for ProductListView
+import 'package:hygi_health/viewmodel/subcategory_view_model.dart'; // SubcategoryViewModel
 import 'package:hygi_health/features/view/BaseScreen.dart';
 
 class CategoryView extends StatefulWidget {
@@ -26,7 +26,7 @@ class _CategoryViewState extends State<CategoryView> {
     super.initState();
     // Initialize the current categoryId with the one passed from the constructor
     currentCategoryId = widget.categoryId;
-    searchSubCategory="";
+    searchSubCategory = ""; // Initialize the search term
     // Fetch subcategories when the widget is initialized
     _fetchSubcategories();
   }
@@ -45,8 +45,8 @@ class _CategoryViewState extends State<CategoryView> {
 
   void _fetchSubcategories() {
     final subcategoryViewModel = Provider.of<SubcategoryViewModel>(context, listen: false);
-    // Ensure subcategories are fetched for the current categoryId
-    subcategoryViewModel.fetchSubcategories(currentCategoryId,searchSubCategory);
+    // Fetch subcategories without using the search term
+    subcategoryViewModel.fetchSubcategories(currentCategoryId, "");
   }
 
   @override
@@ -74,8 +74,25 @@ class _CategoryViewState extends State<CategoryView> {
               selectedPosition: widget.position, // Pass the position to HorizontalCategoryList
             ),
             const SizedBox(height: 16), // Add spacing
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: TextField(
+                decoration: InputDecoration(
+                  labelText: "Search products", // Placeholder text for search
+                  border: OutlineInputBorder(),
+                  suffixIcon: Icon(Icons.search),
+                ),
+                onChanged: (value) {
+                  setState(() {
+                    searchSubCategory = value; // Update the search term
+                  });
+                  // Fetch products or filter based on the search term (handled in ProductListView)
+                },
+              ),
+            ),
+            const SizedBox(height: 16), // Add spacing
             Expanded(
-              child: ProductListView(), // Display products in a list view
+              child: ProductListView(searchTerm: searchSubCategory), // Pass the search term to ProductListView
             ),
           ],
         ),
@@ -83,4 +100,3 @@ class _CategoryViewState extends State<CategoryView> {
     );
   }
 }
-

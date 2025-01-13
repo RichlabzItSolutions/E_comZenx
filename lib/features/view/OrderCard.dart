@@ -1,15 +1,36 @@
 import 'package:flutter/material.dart';
+import 'package:hygi_health/common/Utils/app_colors.dart';
 import '../../data/model/order_model.dart';
+import 'package:provider/provider.dart';
+import '../../../viewmodel/order_view_model.dart'; // Import your OrderViewModel
 
-class OrderCard extends StatelessWidget {
+class OrderCard extends StatefulWidget {
   final Order order;
+  final String activeTab;
 
-  OrderCard({required this.order});
+  OrderCard({required this.order, required this.activeTab});
+
+  @override
+  _OrderCardState createState() => _OrderCardState();
+}
+
+class _OrderCardState extends State<OrderCard> {
+  TextEditingController _reasonController = TextEditingController();
+
+  @override
+  void dispose() {
+    // Dispose of the controller when no longer needed
+    _reasonController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     // Static image for now, you can replace with the actual image URL if available
     String imageUrl = 'assets/mango.png'; // Static fallback image
+
+    // Check if the "Cancel" button should be visible
+    bool showCancelButton = (widget.order.orderStatus == 1 || widget.order.orderStatus == 2 || widget.order.orderStatus == 3);
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -37,7 +58,7 @@ class OrderCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        order.name,
+                        widget.order.name,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16, // Adjusted font size for better readability
@@ -45,7 +66,7 @@ class OrderCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis, // Handles long names
                       ),
                       Text(
-                        '1x ₹${order.totalAmount}',
+                        '1x ₹${widget.order.totalAmount}',
                         overflow: TextOverflow.ellipsis, // Handles long amount text
                         style: const TextStyle(fontSize: 14),
                       ),
@@ -55,19 +76,48 @@ class OrderCard extends StatelessWidget {
                 // Text for order status with color coding for status
                 ConstrainedBox(
                   constraints: BoxConstraints(
-                    maxWidth: 100,  // Limit the max width of the order status
+                    maxWidth: 100, // Limit the max width of the order status
                   ),
-                  child: Text(
-                    order.orderStatus.toString(),
-                    style: TextStyle(
-                      color: order.orderStatus.toString() == 'Active'
-                          ? Colors.green
-                          : order.orderStatus.toString() == 'Completed'
-                          ? Colors.blue
-                          : Colors.red,
-                      fontWeight: FontWeight.bold,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4), // Add padding inside the border
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: widget.order.orderStatus == 1
+                            ? Colors.orange // New Order
+                            : widget.order.orderStatus == 2
+                            ? Colors.blue // Confirmed
+                            : widget.order.orderStatus == 3
+                            ? Colors.purple // In Transit
+                            : widget.order.orderStatus == 4
+                            ? Colors.green // Delivered
+                            : Colors.red, // Cancelled
+                      ),
+                      borderRadius: BorderRadius.circular(8), // Rounded corners
                     ),
-                    overflow: TextOverflow.ellipsis, // Ensures no overflow of text
+                    child: Text(
+                      widget.order.orderStatus == 1
+                          ? 'New Order'
+                          : widget.order.orderStatus == 2
+                          ? 'Confirmed'
+                          : widget.order.orderStatus == 3
+                          ? 'In Transit'
+                          : widget.order.orderStatus == 4
+                          ? 'Delivered'
+                          : 'Cancelled', // Map status to names
+                      style: TextStyle(
+                        color: widget.order.orderStatus == 1
+                            ? Colors.orange
+                            : widget.order.orderStatus == 2
+                            ? Colors.blue
+                            : widget.order.orderStatus == 3
+                            ? Colors.purple
+                            : widget.order.orderStatus == 4
+                            ? Colors.green
+                            : Colors.red, // Text color matches the border color
+                        fontWeight: FontWeight.bold,
+                      ),
+                      overflow: TextOverflow.ellipsis, // Ensures no overflow of text
+                    ),
                   ),
                 ),
               ],
@@ -80,8 +130,7 @@ class OrderCard extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Transaction ID: ${order.createdOn}', style: TextStyle(fontSize: 12)),
-                    Text('Order Date: ${order.orderDate}', style: TextStyle(fontSize: 12)),
+                    Text('Order Date: ${widget.order.orderDate}', style: TextStyle(fontSize: 12)),
                   ],
                 ),
               ],
@@ -91,30 +140,32 @@ class OrderCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.end, // Align the buttons to the right
               children: [
-                // Cancel Button
-                Padding(
-                  padding: const EdgeInsets.only(right: 8.0),
-                  child: TextButton(
-                    onPressed: () {
-                      // Add Cancel logic here
-                    },
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                      backgroundColor: Colors.grey[300],
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
+                // Conditionally show the Cancel Button
+                if (showCancelButton)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: TextButton(
+                      onPressed: () {
+                        // Show confirmation dialog before canceling the order
+                        _showCancelConfirmationDialog(context, widget.order);
+                      },
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        backgroundColor: Colors.grey[300],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
                       ),
-                    ),
-                    child: const Text(
-                      'Cancel',
-                      style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                   ),
-                ),
                 // Track Order Button
                 ElevatedButton(
                   onPressed: () {
@@ -122,8 +173,8 @@ class OrderCard extends StatelessWidget {
                   },
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                    primary: Color(0xFF1A73FC), // Background color
-                    onPrimary: Colors.white, // Text color
+                    backgroundColor: AppColors.primaryColor, // Background color
+                    foregroundColor: Colors.white, // Text color
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
@@ -141,6 +192,52 @@ class OrderCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  // Show confirmation dialog before canceling the order with reason input
+  void _showCancelConfirmationDialog(BuildContext context, Order order) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Cancel Order'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Are you sure you want to cancel this order?'),
+              const SizedBox(height: 8),
+              TextField(
+                controller: _reasonController,
+                decoration: const InputDecoration(
+                  labelText: 'Reason for canceling',
+                  hintText: 'Please provide a reason...',
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: 3,
+              ),
+            ],
+          ),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: const Text('No'),
+            ),
+            TextButton(
+              onPressed: () {
+                // Call cancelOrder method from OrderViewModel and pass the reason
+                final orderViewModel = Provider.of<OrderViewModel>(context, listen: false);
+                String reason = _reasonController.text;
+                orderViewModel.cancelOrder(order.id, reason); // Pass the reason to the cancelOrder method
+                Navigator.of(context).pop(); // Close the dialog after canceling
+              },
+              child: const Text('Yes'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

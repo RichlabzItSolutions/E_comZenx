@@ -63,6 +63,7 @@ class DeliveryViewModel extends ChangeNotifier {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       String? userIdString = prefs.getString('userId');
+      int? locationID = prefs.getInt('location'); // No need to parse here
       int userId = int.tryParse(userIdString ?? '') ?? 0;
 
       // Retrieve selected address
@@ -86,6 +87,8 @@ class DeliveryViewModel extends ChangeNotifier {
         userId: userId.toString(),
         addressId: selectedAddress.id.toString(), // Only sending addressId now
         paymentMode: paymentMode,
+        locationId: locationID??0, // Sending locationId now
+
       );
 
       // Call the API

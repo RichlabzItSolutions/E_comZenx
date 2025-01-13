@@ -32,11 +32,13 @@ class OrderData {
   });
 
   factory OrderData.fromJson(Map<String, dynamic> json) {
+
     return OrderData(
-      orderId: json['order_id'],
-      orderRefNumber: json['order_ref_number'],
-      totalAmount: json['total_amount'].toDouble(),
-      totalItems: json['total_items'],
+    orderId: json['order_id'] ?? 0, // Default to 0 if null
+    orderRefNumber: json['order_ref_number'] ?? '',
+    totalAmount: (json['total_amount'] ?? 0.0).toDouble(), // Default to 0.0 if null
+    totalItems: json['total_items'] ?? 0, // Default to 0 if null
     );
+
   }
 }

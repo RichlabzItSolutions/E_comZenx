@@ -14,6 +14,7 @@ import '../../model/CartResponse.dart';
 import '../../model/DeliveryAddress.dart';
 import '../../model/category_model.dart';
 import '../../model/confirm_order_response.dart';
+import '../../model/location_model.dart';
 import '../../model/product_model.dart';
 import '../../model/request_user_data.dart';
 
@@ -84,6 +85,9 @@ class ApiService {
           await prefs.setString(
               'otpStatus', otpResponse.data?.user?.otpStatus.toString() ?? '');
 
+          // Save locationId (location_id)
+          await prefs.setInt(
+              'locationId', otpResponse.data?.user?.location_id ?? 0);
           return otpResponse.message; // Return the message from the server
         } else {
           throw Exception(otpResponse.message);
@@ -132,17 +136,9 @@ class ApiService {
     await prefs.setString('otp', otp);
   }
 
-  // Optionally save OTP in SharedPreferences or elsewhere
-  Future<void> _saveOtpStatus(String otpstatus) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('otpStatus', otpstatus);
-  }
 
-  // Store userId in SharedPreferences
-  Future<void> _saveUserId(String userId) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('userId', userId);
-  }
+
+
 
   // Store MobileNumber in SharedPreferences
   Future<void> _saveMobileNumber(String mobileNumber) async {
@@ -642,6 +638,54 @@ class ApiService {
     }
   }
 
+  Future<bool> cancelOrder(int userId, int cartId, String reason) async {
+    try {
+      // Define the API URL for cancellation
+      final String url = '${AppConstants.baseUrl}cancelItemFromOrder';
+      // Prepare the body for the request
+      final body = json.encode({
+        'userId': userId,
+        'cartId': cartId,
+        'reason': reason,
+      });
+
+      // Send the POST request
+      final response = await _dio.post(
+        url,
+
+        data: body,
+      );
+
+      // If the server returns a 200 OK response, return true
+      if (response.statusCode == 200) {
+        return true;
+      } else {
+        print('Failed to cancel order: ${response.data}');
+        return false;
+      }
+    } catch (error) {
+      print('Error while canceling order: $error');
+      return false;
+    }
+  }
+// location fetch request
+  Future<List<Location>> fetchLocations() async {
+    final response = await _dio.get('${AppConstants.baseUrl}fetchLocations');
+
+    if (response.statusCode == 200) {
+      final data = (response.data);
+      if (data['success'] == true) {
+        List<Location> locations = (data['data']['locations'] as List)
+            .map((item) => Location.fromJson(item))
+            .toList();
+        return locations;
+      } else {
+        throw Exception(data['message'] ?? 'Failed to fetch locations');
+      }
+    } else {
+      throw Exception('Failed to load locations');
+    }
+  }
 }
 
 

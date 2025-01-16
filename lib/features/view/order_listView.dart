@@ -17,8 +17,10 @@ class OrderListView extends StatelessWidget {
         final filteredOrders = orderViewModel.filteredOrders;
         //final isLoading = orderViewModel.orders.isEmpty;
         // Debugging print statements
-        print("Filtered Orders Length: ${filteredOrders.length}");  // Check how many filtered orders there are
-        print("Order Status: $orderStatus");  // Check what order status is being passed
+        print(
+            "Filtered Orders Length: ${filteredOrders.length}"); // Check how many filtered orders there are
+        print(
+            "Order Status: $orderStatus"); // Check what order status is being passed
 
         // Return a loading indicator while data is being fetched
         // if (isLoading) {
@@ -36,7 +38,8 @@ class OrderListView extends StatelessWidget {
 
         return RefreshIndicator(
           onRefresh: () async {
-            await orderViewModel.fetchOrdersForTab();  // Trigger the refresh action
+            await orderViewModel
+                .fetchOrdersForTab(); // Trigger the refresh action
           },
           child: ListView.builder(
             itemCount: filteredOrders.length,
@@ -45,10 +48,11 @@ class OrderListView extends StatelessWidget {
               final orderStatus = order.orderStatus == 1
                   ? 'Active'
                   : order.orderStatus == 4
-                  ? 'Delivered'
-                  : 'Cancelled'; // Set the status string based on the order's orderStatus
+                      ? 'Delivered'
+                      : 'Cancelled'; // Set the status string based on the order's orderStatus
               return OrderCard(
-                order: order, activeTab: orderStatus, // Pass the status to the OrderCard
+                order: order,
+                activeTab: orderStatus, // Pass the status to the OrderCard
               );
             },
           ),

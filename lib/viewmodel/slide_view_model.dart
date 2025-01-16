@@ -3,14 +3,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hygi_health/common/globally.dart';
 
-
 class SliderViewModel extends ChangeNotifier {
-  List<String> _banners = [];  // List of banner image URLs
+  List<String> _banners = []; // List of banner image URLs
   List<String> get banners => _banners;
 
   bool isLoading = false;
 
   int _currentPage = 0;
+
   int get currentPage => _currentPage;
 
   // Timer for auto-scrolling
@@ -22,7 +22,8 @@ class SliderViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      _banners = await authService.fetchBanners(); // Fetch banners using the APIClass
+      _banners =
+          await authService.fetchBanners(); // Fetch banners using the APIClass
     } catch (e) {
       print('Error fetching banners: $e');
     }

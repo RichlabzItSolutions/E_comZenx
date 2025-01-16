@@ -6,11 +6,11 @@ import 'package:hygi_health/data/model/product_model.dart';
 import 'package:hygi_health/data/model/product_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 // Import ApiService
 
 class ProductViewModel extends ChangeNotifier {
-  ProductView? product; // Nullable type to ensure that product is initialized after fetch
+  ProductView?
+      product; // Nullable type to ensure that product is initialized after fetch
   bool isLoading = false; // Track loading state
   String? errorMessage; // Track any error message
 
@@ -23,8 +23,8 @@ class ProductViewModel extends ChangeNotifier {
       isLoading = true; // Start loading when the API call begins
       errorMessage = null; // Reset previous error message
       // Fetch the product details using authService
-      final fetchedProduct = await authService.fetchProduct(
-          productId, variantId);
+      final fetchedProduct =
+          await authService.fetchProduct(productId, variantId);
 
       if (fetchedProduct != null) {
         product =
@@ -32,14 +32,14 @@ class ProductViewModel extends ChangeNotifier {
         notifyListeners(); // Notify listeners that loading has started
       } else {
         errorMessage =
-        'Product not found'; // Handle case when product is not found
+            'Product not found'; // Handle case when product is not found
       }
     } catch (e) {
       // Handle errors (e.g., network issues)
       errorMessage = 'Error fetching product: $e';
     } finally {
       isLoading =
-      false; // Stop loading after the data is fetched or an error occurs
+          false; // Stop loading after the data is fetched or an error occurs
       notifyListeners(); // Notify listeners that the state has changed
     }
   }
@@ -74,8 +74,9 @@ class ProductViewModel extends ChangeNotifier {
 
       if (response['success'] == true) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(
-              response['message'] ?? 'Added to cart successfully.')),
+          SnackBar(
+              content:
+                  Text(response['message'] ?? 'Added to cart successfully.')),
         );
         return true;
       } else {

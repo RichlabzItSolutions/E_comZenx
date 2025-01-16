@@ -1,43 +1,44 @@
 import 'package:flutter/material.dart';
+import 'package:hygi_health/common/Utils/app_colors.dart';
 import 'package:hygi_health/data/model/product_model.dart';
 import 'package:provider/provider.dart';
 import 'package:hygi_health/viewmodel/subcategory_view_model.dart';
 
 class HorizontalCategoryList extends StatefulWidget {
   final Function(int) onCategorySelected;
-  final int selectedPosition; // Accept selectedPosition from CategoryView
+  final int selectedPosition;
 
-  HorizontalCategoryList({required this.onCategorySelected, required this.selectedPosition});
+  HorizontalCategoryList({
+    required this.onCategorySelected,
+    required this.selectedPosition,
+  });
 
   @override
   _HorizontalCategoryListState createState() => _HorizontalCategoryListState();
 }
 
 class _HorizontalCategoryListState extends State<HorizontalCategoryList> {
-  int _selectedIndex = -1; // Initialize to -1 (no selection)
+  int _selectedIndex = -1;
+  late ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
-
-    // Set the initial selected index from the passed position
     _selectedIndex = widget.selectedPosition;
+    _scrollController = ScrollController();
 
-    // Fetch products for the selected category
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (_selectedIndex >= 0) {
         _fetchProductsForSelectedCategory();
+        _scrollToSelectedItem();
       }
     });
   }
 
-  // Fetch products for the selected category
   Future<void> _fetchProductsForSelectedCategory() async {
     final subcategoryViewModel = Provider.of<SubcategoryViewModel>(context, listen: false);
-
     if (subcategoryViewModel.subcategories.isNotEmpty && _selectedIndex >= 0) {
       final selectedCategory = subcategoryViewModel.subcategories[_selectedIndex];
-
       ProductFilterRequest payload = ProductFilterRequest(
         categoryId: selectedCategory.categoryId.toString(),
         subCategoryId: selectedCategory.subcategoryId.toString(),
@@ -50,14 +51,21 @@ class _HorizontalCategoryListState extends State<HorizontalCategoryList> {
       );
 
       subcategoryViewModel.fetchProducts(payload);
-      widget.onCategorySelected(selectedCategory.categoryId); // Notify parent widget
+      widget.onCategorySelected(selectedCategory.categoryId);
     }
   }
 
-  // Refresh categories on pull-to-refresh
-  Future<void> _refreshCategories() async {
-    final subcategoryViewModel = Provider.of<SubcategoryViewModel>(context, listen: false);
-    await _fetchProductsForSelectedCategory();
+  // Scroll to the selected item position
+  void _scrollToSelectedItem() {
+    if (_selectedIndex >= 0 && _selectedIndex < 88) {
+      // Scroll to the position of the selected item (adjust for margin and padding)
+      double offset = (_selectedIndex * 120.0);  // Assuming each item has a width of 120.0 (adjust as necessary)
+      _scrollController.animateTo(
+        offset,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
+    }
   }
 
   @override
@@ -74,11 +82,17 @@ class _HorizontalCategoryListState extends State<HorizontalCategoryList> {
       return Center(child: Text('No categories available'));
     }
 
-    return RefreshIndicator(
-      onRefresh: _refreshCategories, // Trigger refresh logic
-      child: Column(
-        children: [
-          SingleChildScrollView(
+    return Theme(
+      data: Theme.of(context).copyWith(
+        cardColor: Colors.white,
+      ),
+      child: Card(
+        color: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(0)),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: SingleChildScrollView(
+            controller: _scrollController, // Set the controller for scrolling
             scrollDirection: Axis.horizontal,
             child: Row(
               children: List.generate(categories.length, (index) {
@@ -88,10 +102,10 @@ class _HorizontalCategoryListState extends State<HorizontalCategoryList> {
                 return GestureDetector(
                   onTap: () {
                     setState(() {
-                      _selectedIndex = index;  // Update the selected index when category is tapped
+                      _selectedIndex = index;
                     });
 
-                    widget.onCategorySelected(category.categoryId);  // Notify parent widget
+                    widget.onCategorySelected(category.categoryId);
 
                     ProductFilterRequest payload = ProductFilterRequest(
                       categoryId: category.categoryId.toString(),
@@ -104,74 +118,34 @@ class _HorizontalCategoryListState extends State<HorizontalCategoryList> {
                       priceSort: '',
                     );
 
-                    subcategoryViewModel.fetchProducts(payload);  // Fetch products for selected category
+                    subcategoryViewModel.fetchProducts(payload);
+                    _scrollToSelectedItem(); // Scroll to the selected item
                   },
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Column(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(8),
-                            boxShadow: [
-                              BoxShadow(
-                                color: isSelected
-                                    ? Colors.green.withOpacity(0.5)
-                                    : Colors.grey.withOpacity(0.3),
-                                spreadRadius: 4,
-                                blurRadius: 10,
-                                offset: Offset(0, 4),
-                              ),
-                            ],
-                            border: Border.all(
-                              color: isSelected ? Colors.green : Colors.transparent,
-                              width: 2,
-                            ),
-                          ),
-                          padding: const EdgeInsets.all(8.0),
-                          child: SizedBox(
-                            width: 80,
-                            height: 80,
-                            child: Center(
-                              child: Text(
-                                category.subcategoryTitle,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                  color: isSelected ? Colors.green : Colors.black,
-                                ),
-                              ),
-                            ),
-                          ),
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 8.0),
+                    padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 16.0),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: isSelected ? AppColors.primaryColor : Colors.transparent,
+                          width: 2.0,
                         ),
-                        const SizedBox(height: 4),
-                      ],
+                      ),
+                    ),
+                    child: Text(
+                      category.subcategoryTitle,
+                      style: TextStyle(
+                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                        color: isSelected ? AppColors.primaryColor : Colors.black,
+                      ),
                     ),
                   ),
                 );
               }),
             ),
           ),
-          const SizedBox(height: 8),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: List.generate(categories.length, (index) {
-              return AnimatedContainer(
-                duration: Duration(milliseconds: 300),
-                margin: EdgeInsets.symmetric(horizontal: 4),
-                height: 4,
-                width: _selectedIndex == index ? 16 : 8,
-                decoration: BoxDecoration(
-                  color: _selectedIndex == index ? Colors.green : Colors.grey,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-              );
-            }),
-          ),
-        ],
+        ),
       ),
     );
   }
 }
-

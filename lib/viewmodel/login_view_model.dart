@@ -5,14 +5,15 @@ import '../common/globally.dart';
 import '../data/model/request_user_data.dart';
 import 'base_view_ model.dart';
 
-
 class LoginViewModel extends BaseViewModel {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   String _phone = '';
-  String _errorMessage = ''; // Non-nullable field initialized with a default value
+  String _errorMessage =
+      ''; // Non-nullable field initialized with a default value
   String? _successMessage;
 
   String get errorMessage => _errorMessage;
+
   String? get successMessage => _successMessage;
 
   void setErrorMessage(String message) {
@@ -33,7 +34,6 @@ class LoginViewModel extends BaseViewModel {
       return;
     }
     try {
-
       final user = RequestUserData(mobile: _phone);
       final result = await authService.login(user);
       _successMessage = result;
@@ -50,17 +50,18 @@ class LoginViewModel extends BaseViewModel {
     notifyListeners();
   }
 
-
   // Check if OTPStus has already been verified
   Future<String?> isOtpStatusAlreadyVerified() async {
     final otpStatus = await getOtpStatus();
     return otpStatus;
   }
+
   // Check if OTP has already been verified
   Future<String?> isOtpAlreadyVerified() async {
     final otpStatus = await getOtp();
     return otpStatus;
   }
+
   // Method to get OTP status based on userId
   Future<String?> getOtpStatusByUserId() async {
     final prefs = await SharedPreferences.getInstance();
@@ -74,11 +75,12 @@ class LoginViewModel extends BaseViewModel {
       print("Fetched UserId: $savedUserId");
       print("Fetched OTP Status: $otpStatus");
 
-      return otpStatus;  // Return the OTP status associated with the userId
+      return otpStatus; // Return the OTP status associated with the userId
     } else {
-      return null;  // No userId found, meaning the user has not been authenticated yet
+      return null; // No userId found, meaning the user has not been authenticated yet
     }
   }
+
   @override
   void dispose() {
     // Any resource cleanup logic here

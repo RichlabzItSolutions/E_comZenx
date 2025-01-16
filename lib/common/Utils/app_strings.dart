@@ -41,9 +41,9 @@ class AppStrings {
   // verify Otp
   static const String verifyOtp = "Verify Code";
   static const String otpNotMatch = "OTP does not match.";
-  static const String resendOtp = "Resend OTP";
+  static const String resendOtp = " Resend";
   static const String enterOtp = "Please enter the OTP sent to your mobile.";
-  static const String dontreciveOtp = "Don't receive the OTP?";
+  static const String dontreciveOtp = "Don't receive the OTP? ";
 
 
 
@@ -62,6 +62,7 @@ class AppStrings {
 
 // Add New Address
   static const String addAddress = "Add New Address";
+  static const String editAddress = "Edit Address";
   static const String apartMentorHouseNo = "Apartment/House No.";
   static const String pleaseenterApartMentHouseNumber = " Please enter apartment/house number";
   static const String streetDetails = "Apartment Name/Street Details";
@@ -82,6 +83,7 @@ class AppStrings {
   static const String pleaseenterPincode = "Please enter pincode";
   static const String pleaseentervalidpincode = "Pincode must be 6 digits";
   static const String saveAddress = "Save Address";
+  static const String updateAdress = "Update Address.";
   static const String addressUpdated = "Address updated successfully.";
   static const String defaultAddress = "Set as default Address";
 

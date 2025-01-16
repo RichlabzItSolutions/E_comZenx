@@ -86,4 +86,8 @@ flutter:
     - assets/mango.png
     - assets/person.png
     - assets/cart.png
+    - assets/info.png
+    - assets/location.png
+    - assets/privacy.png
+    - assets/no_products.png
 

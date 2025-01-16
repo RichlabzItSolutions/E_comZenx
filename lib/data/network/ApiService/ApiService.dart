@@ -15,6 +15,8 @@ import '../../model/DeliveryAddress.dart';
 import '../../model/category_model.dart';
 import '../../model/confirm_order_response.dart';
 import '../../model/location_model.dart';
+
+import '../../model/order_summary_model.dart';
 import '../../model/product_model.dart';
 import '../../model/request_user_data.dart';
 
@@ -137,9 +139,6 @@ class ApiService {
   }
 
 
-
-
-
   // Store MobileNumber in SharedPreferences
   Future<void> _saveMobileNumber(String mobileNumber) async {
     final prefs = await SharedPreferences.getInstance();
@@ -226,7 +225,8 @@ class ApiService {
   Future<List<Product>> fetchProducts(ProductFilterRequest payload) async {
     try {
       // Define your API endpoint
-      final String apiUrl = '${AppConstants.baseUrl}fetchProducts'; // Replace with your actual API endpoint
+      final String apiUrl = '${AppConstants
+          .baseUrl}fetchProducts'; // Replace with your actual API endpoint
 
       // Convert the payload object to JSON
       final Map<String, dynamic> jsonPayload = {
@@ -275,7 +275,6 @@ class ApiService {
       rethrow; // Propagate the error to the higher level
     }
   }
-
 
 
 // Fetch product details using POST method with productId and variantId
@@ -373,7 +372,7 @@ class ApiService {
       }
     } catch (e) {
       // Catching and handling errors (network issues, invalid response, etc.)
-      if (e is DioError) {
+      if (e is DioException) {
         // DioError gives more specific error data
         if (e.response != null) {
           // If we have a response from server
@@ -425,7 +424,7 @@ class ApiService {
         throw Exception(
             'Failed to fetch states. Status code: ${response.statusCode}');
       }
-    } on DioError catch (dioError) {
+    } on DioException catch (dioError) {
       // Handle Dio-specific errors
       throw Exception('Dio error occurred: ${dioError.message}');
     } catch (e) {
@@ -456,6 +455,62 @@ class ApiService {
     // Create the body for the POST request
     final Map<String, dynamic> body = {
       'userId': userId,
+      'addressTypeId': addressTypeId,
+      'name': name,
+      'mobile': mobile,
+      'defaultAddress': defaultAddress ? 1 : 0,
+      'address': address,
+      'city': city,
+      'stateId': stateId,
+      'pincode': pincode,
+      'area': area,
+      'landmark': landmark,
+      'latitude': latitude,
+      'longitude': longitude,
+    };
+
+    try {
+      // Send the POST request
+      final response = await _dio.post(
+        url,
+        data: json.encode(body),
+      );
+
+      if (response.statusCode == 200) {
+        // If the server returns a 200 OK response, return true (success)
+        return true;
+      } else {
+        // If the server returns an error, print the response and return false
+        print('Failed to save address: ${response.data}');
+        return false;
+      }
+    } catch (e) {
+      print("Error saving address: $e");
+      return false;
+    }
+  }
+
+  Future<bool> editAddress({
+    required int addressId, // Removed userId
+    required int addressTypeId,
+    required String name,
+    required String mobile,
+    required bool defaultAddress,
+    required String address,
+    required String city,
+    required int stateId,
+    required String pincode,
+    required String area,
+    required String landmark,
+    required String latitude,
+    required String longitude,
+  }) async {
+    final String url = '${AppConstants
+        .baseUrl}editAddress'; // Assuming your API endpoint
+
+    // Create the body for the POST request, excluding userId
+    final Map<String, dynamic> body = {
+      'addressId': addressId, // Add the addressId key
       'addressTypeId': addressTypeId,
       'name': name,
       'mobile': mobile,
@@ -555,12 +610,13 @@ class ApiService {
 
   // Method to fetch the list of subcategories
 
-  Future<List<Subcategory>> postCategorySubcategory(int categoryId, String searchSubCategory) async {
+  Future<List<Subcategory>> postCategorySubcategory(int categoryId,
+      String searchSubCategory) async {
     try {
       // Create the request body with categoryId
       final Map<String, dynamic> requestBody = {
         'categoryId': categoryId,
-        'searchSubCategory': searchSubCategory ?? ' ',  // If searchSubCategory is null, use an empty string
+        'searchSubCategory': searchSubCategory ?? ' ', // If searchSubCategory is null, use an empty string
       };
 
       final String url = '${AppConstants.baseUrl}fetchSubCategories';
@@ -575,7 +631,8 @@ class ApiService {
       if (response.statusCode == 200) {
         // Check if response data is not null
         if (response.data != null && response.data['success'] == true) {
-          final List subcategoryData = response.data['data']['subcategories'] ?? [];
+          final List subcategoryData = response.data['data']['subcategories'] ??
+              [];
           return subcategoryData
               .map((item) => Subcategory.fromJson(item))
               .toList();
@@ -584,7 +641,8 @@ class ApiService {
         }
       } else {
         // Handle non-200 status codes
-        throw Exception('Failed to post data. Status code: ${response.statusCode}');
+        throw Exception(
+            'Failed to post data. Status code: ${response.statusCode}');
       }
     } catch (e) {
       // Log the error and rethrow it for handling in the calling code
@@ -610,17 +668,18 @@ class ApiService {
     if (response.statusCode == 200) {
       // If the server returns a successful response, parse the JSON
       OrdersResponse ordersResponse = OrdersResponse.fromJson(response.data);
-      return ordersResponse.orders;  // Return the list of orders
+      return ordersResponse.orders; // Return the list of orders
     } else {
       // If the server returns an error
       throw Exception('Failed to load orders');
     }
   }
+
 // confirm Order
   Future<ConfirmOrderResponse> confirmOrder(ConfirmOrder order) async {
     final String url = '${AppConstants.baseUrl}confirmOrder';
     final response = await _dio.post(
-        url,
+      url,
       data: jsonEncode(order.toJson()),
     );
 
@@ -641,11 +700,11 @@ class ApiService {
   Future<bool> cancelOrder(int userId, int cartId, String reason) async {
     try {
       // Define the API URL for cancellation
-      final String url = '${AppConstants.baseUrl}cancelItemFromOrder';
+      final String url = '${AppConstants.baseUrl}cancelOrder';
       // Prepare the body for the request
       final body = json.encode({
         'userId': userId,
-        'cartId': cartId,
+        'orderId': cartId,
         'reason': reason,
       });
 
@@ -668,6 +727,7 @@ class ApiService {
       return false;
     }
   }
+
 // location fetch request
   Future<List<Location>> fetchLocations() async {
     final response = await _dio.get('${AppConstants.baseUrl}fetchLocations');
@@ -686,10 +746,72 @@ class ApiService {
       throw Exception('Failed to load locations');
     }
   }
+
+  // Fetch order summary by orderId and userId
+  Future<OrderSummary> getOrderDetails(int userId, int orderId) async {
+    String url = '${AppConstants
+        .baseUrl}fetchOrderDetails'; // Use the correct endpoint
+
+    try {
+      final response = await _dio.post(
+        url,
+        data: json.encode({
+          'orderId': orderId,
+          'userId': userId,
+        }),
+        options: Options(headers: {'Content-Type': 'application/json'}),
+      );
+
+      if (response.statusCode == 200) {
+        // Parse the response body to map it to OrderSummary model
+        final Map<String, dynamic> jsonResponse = response.data;
+
+        if (jsonResponse['success']) {
+          return OrderSummary.fromJson(
+              jsonResponse); // Ensure the response is correctly parsed
+        } else {
+          throw Exception('Failed to load order details');
+        }
+      } else {
+        throw Exception('Failed to load order details');
+      }
+    } catch (e) {
+      throw Exception('Error fetching order details: $e');
+    }
+  }
+
+
+  // Method to get cart data from the API
+  Future<Map<String, dynamic>> getCartData(int userId) async {
+    String url = '${AppConstants.baseUrl}fetchCartTotal';
+
+    try {
+      // Send the POST request
+      final response = await _dio.post(
+        url,
+        data: json.encode({
+          'userId': userId,
+        }),
+      );
+
+      // Check if the response status is 200 (successful)
+      if (response.statusCode == 200) {
+        // Parse the JSON response and return it
+        return (response.data);
+      } else {
+        // Handle other HTTP status codes if needed
+        throw Exception('Failed to load cart, status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Catch any errors such as network issues or invalid response format
+      print('Error fetching cart data: $e');
+      throw Exception('Failed to load cart');
+    }
+  }
+
+
+
 }
-
-
-
 
 
 

@@ -15,6 +15,8 @@ class AddressModel {
   String? longitude;      // Longitude (can be left empty if not available)
   String? apartmentNumber; // Apartment or house number
   String? apartmentName;   // Apartment name or building name
+  String? stateName;       // State name (if available)
+  String? addressType;     // Address type (if available)
 
   AddressModel({
     this.userId,
@@ -33,6 +35,8 @@ class AddressModel {
     this.longitude,
     this.apartmentNumber,
     this.apartmentName,
+    this.stateName,    // Added to constructor
+    this.addressType,  // Added to constructor
   });
 
   // Method to convert JSON data to AddressModel
@@ -55,6 +59,8 @@ class AddressModel {
       longitude: json['longitude'],
       apartmentNumber: json['apartmentNumber'],  // Apartment number
       apartmentName: json['apartmentName'],      // Apartment name
+      stateName: json['stateName'],              // State name (nullable)
+      addressType: json['addressType'],          // Address type (nullable)
     );
   }
 
@@ -76,6 +82,8 @@ class AddressModel {
       'longitude': longitude,
       'apartmentNumber': apartmentNumber,  // Include apartment number
       'apartmentName': apartmentName,      // Include apartment name
+      'stateName': stateName,              // Include stateName
+      'addressType': addressType,          // Include addressType
     };
   }
 }

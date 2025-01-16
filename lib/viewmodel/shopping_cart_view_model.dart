@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:hygi_health/common/globally.dart';
 import 'package:hygi_health/data/model/removecartItemrequest.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../data/model/CartResponse.dart';  // Import the CartResponse model
+import '../data/model/CartResponse.dart'; // Import the CartResponse model
 
 class ShoppingCartViewModel extends ChangeNotifier {
   // Instance of ApiService
@@ -39,7 +39,8 @@ class ShoppingCartViewModel extends ChangeNotifier {
         throw Exception('User not logged in');
       }
 
-      int? userId = int.tryParse(userIdString); // Safely parse the userId as an integer
+      int? userId =
+          int.tryParse(userIdString); // Safely parse the userId as an integer
       if (userId == null) {
         // Handle parsing error (e.g., corrupted value in SharedPreferences)
         throw Exception('Invalid userId format in SharedPreferences');
@@ -55,14 +56,16 @@ class ShoppingCartViewModel extends ChangeNotifier {
         // Dynamically update delivery charges, discount, gstRate, and finalAmount based on the response
         deliveryCharges = cartResponse.data.totalDeliveryCharges;
         discount = cartResponse.data.discount;
-        gstRate = cartResponse.data.gst;  // Assuming the response includes gstRate
-        finalAmount = cartResponse.data.finalAmount;  // Assuming the response includes finalAmount
+        gstRate =
+            cartResponse.data.gst; // Assuming the response includes gstRate
+        finalAmount = cartResponse
+            .data.finalAmount; // Assuming the response includes finalAmount
       } else {
         // Handle failure case (e.g., display a message)
         _items = [];
         deliveryCharges = 0.0;
         discount = 0.0;
-        gstRate = 0.0;  // Default GST rate
+        gstRate = 0.0; // Default GST rate
         finalAmount = 0.0; // Default final amount
       }
     } catch (e) {
@@ -71,26 +74,26 @@ class ShoppingCartViewModel extends ChangeNotifier {
       _items = [];
       deliveryCharges = 0.0;
       discount = 0.0;
-      gstRate = 0.0;  // Default GST rate
+      gstRate = 0.0; // Default GST rate
       finalAmount = 0.0; // Default final amount
     }
 
-    _isLoading = false;  // Set loading to false after data fetch
-    notifyListeners();  // Notify listeners to update UI
+    _isLoading = false; // Set loading to false after data fetch
+    notifyListeners(); // Notify listeners to update UI
   }
 
   // Increment item quantity
   Future<void> incrementQuantity(int index) async {
     try {
       _items[index].quantity++;
-      _items[index].totalAmount = _items[index].unitPrice * _items[index].quantity;
+      //_items[index].totalAmount = _items[index].unitPrice * _items[index].quantity;
 
       // Call the API to update the cart on the server
       await _updateCartItem(index);
 
       // Fetch updated cart items
       await fetchCartItems();
-      notifyListeners();  // Notify UI about the change
+      notifyListeners(); // Notify UI about the change
     } catch (e) {
       print('Error incrementing quantity: $e');
     }
@@ -101,13 +104,13 @@ class ShoppingCartViewModel extends ChangeNotifier {
     try {
       if (_items[index].quantity > 1) {
         _items[index].quantity--;
-        _items[index].totalAmount = _items[index].unitPrice * _items[index].quantity;
+        //_items[index].totalAmount = _items[index].unitPrice * _items[index].quantity;
 
         // Call the API to update the cart on the server
         await _updateCartItem(index);
         // Fetch updated cart items
         await fetchCartItems();
-        notifyListeners();  // Notify UI about the change
+        notifyListeners(); // Notify UI about the change
       }
     } catch (e) {
       print('Error decrementing quantity: $e');
@@ -117,7 +120,7 @@ class ShoppingCartViewModel extends ChangeNotifier {
   // Remove item from cart
   void removeItem(int index) {
     _items.removeAt(index);
-    notifyListeners();  // Notify UI about the change
+    notifyListeners(); // Notify UI about the change
   }
 
   // New removeCartItem method to remove the item from the server
@@ -144,10 +147,9 @@ class ShoppingCartViewModel extends ChangeNotifier {
 
       // Call API to remove the item from the cart
       final response = await authService.removeFromCart(removeCartItemRequest);
-        // If the item is removed successfully from the server, remove it locally
-        _items.removeAt(index);
-        notifyListeners();
-
+      // If the item is removed successfully from the server, remove it locally
+      _items.removeAt(index);
+      notifyListeners();
     } catch (e) {
       print('Error removing item from cart: $e');
     }
@@ -156,7 +158,7 @@ class ShoppingCartViewModel extends ChangeNotifier {
   // Get userId from SharedPreferences
   Future<int?> getUserId() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getInt('userId');  // Fetch userId as an integer
+    return prefs.getInt('userId'); // Fetch userId as an integer
   }
 
   // Method to update the cart item on the server (Add to cart API)
@@ -178,7 +180,7 @@ class ShoppingCartViewModel extends ChangeNotifier {
 
       // Call the API to update the cart item (add/update)
       final response = await authService.addToCart(
-        userId: userIdString,  // Pass userId as string
+        userId: userIdString, // Pass userId as string
         productId: cartItem.productId,
         variantId: cartItem.variantId,
         qty: qty,

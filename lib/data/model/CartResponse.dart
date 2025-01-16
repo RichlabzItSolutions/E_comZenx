@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 class CartResponse {
   final bool success;
   final String message;
@@ -82,14 +80,15 @@ class CartItem {
   final String sku;
   final String? colour; // Nullable
   final String? size; // Nullable
-   int quantity;
-  final double unitPrice;
-   double totalAmount;
-  final double gstPercentage;
-  final double gstAmount;
-  final double shippingCharges;
+  int quantity;
+  double unitPrice; // Changed to double
+  double totalAmount;
+  double gstPercentage;
+  double gstAmount;
+  double shippingCharges;
   final String? couponTitle; // Nullable
   final String createdOn;
+  double mrp; // Changed to double
 
   CartItem({
     required this.productId,
@@ -101,6 +100,7 @@ class CartItem {
     this.size,
     required this.quantity,
     required this.unitPrice,
+    required this.mrp,
     required this.totalAmount,
     required this.gstPercentage,
     required this.gstAmount,
@@ -110,7 +110,6 @@ class CartItem {
   });
 
   factory CartItem.fromJson(Map<String, dynamic> json) {
-    // Safely parse the fields and provide default values if necessary
     return CartItem(
       productId: json['productId'] as int,
       variantId: json['variantId'] as int,
@@ -125,6 +124,9 @@ class CartItem {
       unitPrice: (json['unitPrice'] is double)
           ? json['unitPrice'] as double
           : double.tryParse(json['unitPrice'].toString()) ?? 0.0,
+      mrp: (json['mrp'] is double)
+          ? json['mrp'] as double
+          : double.tryParse(json['mrp'].toString()) ?? 0.0,
       totalAmount: (json['totalAmount'] is double)
           ? json['totalAmount'] as double
           : double.tryParse(json['totalAmount'].toString()) ?? 0.0,
@@ -152,13 +154,14 @@ class CartItem {
       'colour': colour,
       'size': size,
       'quantity': quantity,
-      'unitPrice': unitPrice.toString(),
-      'totalAmount': totalAmount.toString(),
-      'gstPercentage': gstPercentage.toString(),
-      'gstAmount': gstAmount.toString(),
-      'shippingCharges': shippingCharges.toString(),
+      'unitPrice': unitPrice,
+      'totalAmount': totalAmount,
+      'gstPercentage': gstPercentage,
+      'gstAmount': gstAmount,
+      'shippingCharges': shippingCharges,
       'couponTitle': couponTitle,
       'createdOn': createdOn,
+      'mrp': mrp, // Added mrp to JSON conversion
     };
   }
 }

@@ -7,6 +7,7 @@ class OrderConfirmationPage extends StatelessWidget {
   final String orderReference;
   final double totalAmount;
   final int totalItems;
+
   const OrderConfirmationPage({
     Key? key,
     required this.orderId,
@@ -59,9 +60,9 @@ class OrderConfirmationPage extends StatelessWidget {
               ),
               const SizedBox(height: 20),
               Text(
-                    'Order #: $orderReference\n'
-                    'Total Amount: ₹ $totalAmount\n'
-                    'Total Quantity: $totalItems',
+                'Order #: $orderReference\n'
+                'Total Amount: ₹ $totalAmount\n'
+                'Total Quantity: $totalItems',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 16,

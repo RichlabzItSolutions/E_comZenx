@@ -1,37 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:hygi_health/features/view/BaseScreen.dart';
-import 'package:hygi_health/viewmodel/myaccount_view_Model.dart';
-import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../routs/Approuts.dart';
+
 class MyAccountScreen extends StatelessWidget {
-  const  MyAccountScreen({Key? key}) : super(key: key);
+  const MyAccountScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    final viewModel = Provider.of<MyAccountViewModel>(context);
     return BaseScreen(
-      title: 'Profile',
-      cartItemCount: 3,
+      title: 'My Account',
       // Example cart item count
       showCartIcon: false,
       showShareIcon: false,
-        child: Column(
+      child: Column(
         children: [
           // Profile Header
           Container(
             padding: const EdgeInsets.symmetric(vertical: 20),
+            // Retained header space
             child: Column(
               children: [
                 Stack(
                   alignment: Alignment.bottomRight,
                   children: [
-                    CircleAvatar(
+                    const CircleAvatar(
                       radius: 50,
-
                     ),
                     GestureDetector(
-                      //onTap: viewModel.pickImageFromCamera,
+                      // onTap: viewModel.pickImageFromCamera,
                       child: Container(
                         padding: const EdgeInsets.all(6),
                         decoration: const BoxDecoration(
@@ -53,136 +51,86 @@ class MyAccountScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
+                    color: Colors.black, // Set text color to black
                   ),
                 ),
               ],
             ),
           ),
-          const Divider(thickness: 1, color: Colors.grey),
-
           // Options List
           Expanded(
             child: ListView(
               children: [
                 ListTile(
-                  leading: const Icon(Icons.person),
-                  title: const Text('Your Profile'),
+                  leading: Image.asset("assets/profile.png"),
+                  title: const Text(
+                    'Your Profile',
+                    style: TextStyle(
+                        color: Colors.black), // Set text color to black
+                  ),
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                   onTap: () {
                     print("Profile");
-                  }, // Add navigation or functionality here
+                  },
                 ),
-                // Padding(
-                //   padding: EdgeInsets.only(left: 12,right: 12) , // Adjust horizontal space
-                //   child: Divider(
-                //     thickness: 1, // Optional: to change the thickness of the line
-                //     color: Colors.grey, // Optional: to change the color
-                //   ),
-                // ),
+                _buildDivider(),
                 ListTile(
-                  leading: const Icon(Icons.location_on),
-                  title: const Text('Manage Address'),
+                  leading: Image.asset("assets/location.png"),
+                  title: const Text(
+                    'My Address Book',
+                    style: TextStyle(
+                        color: Colors.black), // Set text color to black
+                  ),
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                   onTap: () {
                     Navigator.pushNamed(context, AppRoutes.DeliveryAddress);
                   },
                 ),
-                // Padding(
-                //   padding: EdgeInsets.only(left: 12,right: 12) , // Adjust horizontal space
-                //   child: Divider(
-                //     thickness: 1, // Optional: to change the thickness of the line
-                //     color: Colors.grey, // Optional: to change the color
-                //   ),
-                // ),
+                _buildDivider(),
                 ListTile(
-                  leading: const Icon(Icons.credit_card),
-                  title: const Text('Payment Methods'),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                  onTap: () {},
-                ),
-                // Padding(
-                //   padding: EdgeInsets.only(left: 12,right: 12) , // Adjust horizontal space
-                //   child: Divider(
-                //     thickness: 1, // Optional: to change the thickness of the line
-                //     color: Colors.grey, // Optional: to change the color
-                //   ),
-                // ),
-
-                ListTile(
-                  leading: const Icon(Icons.account_balance_wallet),
-                  title: const Text('My Wallet'),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                  onTap: () {},
-                ),
-                // Padding(
-                //   padding: EdgeInsets.only(left: 12,right: 12) , // Adjust horizontal space
-                //   child: Divider(
-                //     thickness: 1, // Optional: to change the thickness of the line
-                //     color: Colors.grey, // Optional: to change the color
-                //   ),
-                // ),
-                ListTile(
-                  leading: const Icon(Icons.local_offer),
-                  title: const Text('My Coupons'),
+                  leading: Image.asset("assets/cart.png"),
+                  title: const Text(
+                    'My Orders',
+                    style: TextStyle(
+                        color: Colors.black), // Set text color to black
+                  ),
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                   onTap: () {
-                    Navigator.pushNamed(context, AppRoutes.COUPON);
+                    Navigator.pushNamed(context, AppRoutes.MYORDERS);
                   },
                 ),
-                // Padding(
-                //   padding: EdgeInsets.only(left: 12,right: 12) , // Adjust horizontal space
-                //   child: Divider(
-                //     thickness: 1, // Optional: to change the thickness of the line
-                //     color: Colors.grey, // Optional: to change the color
+                _buildDivider(),
+                // ListTile(
+                //   leading: Image.asset("assets/info.png"),
+                //   title: const Text(
+                //     'Help Center',
+                //     style: TextStyle(color: Colors.black), // Set text color to black
                 //   ),
+                //   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                //   onTap: () {},
                 // ),
+                // _buildDivider(),
                 ListTile(
-                  leading: const Icon(Icons.settings),
-                  title: const Text('Settings'),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                  onTap: () {
-                    Navigator.pushNamed(context, AppRoutes.NOTIFICATION);
-                  },
-                ),
-                // Padding(
-                //   padding: EdgeInsets.only(left: 12,right: 12) , // Adjust horizontal space
-                //   child: Divider(
-                //     thickness: 1, // Optional: to change the thickness of the line
-                //     color: Colors.grey, // Optional: to change the color
-                //   ),
-                // ),
-                ListTile(
-                  leading: const Icon(Icons.help),
-                  title: const Text('Help Center'),
+                  leading: Image.asset("assets/privacy.png"),
+                  title: const Text(
+                    'Privacy Policy',
+                    style: TextStyle(
+                        color: Colors.black), // Set text color to black
+                  ),
                   trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                   onTap: () {},
                 ),
-                // Padding(
-                //   padding: EdgeInsets.only(left: 12,right: 12) , // Adjust horizontal space
-                //   child: Divider(
-                //     thickness: 1, // Optional: to change the thickness of the line
-                //     color: Colors.grey, // Optional: to change the color
-                //   ),
-                // ),
-                ListTile(
-                  leading: const Icon(Icons.privacy_tip),
-                  title: const Text('Privacy Policy'),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                  onTap: () {},
-                ),
-                // Padding(
-                //   padding: EdgeInsets.only(left: 12,right: 12) , // Adjust horizontal space
-                //   child: Divider(
-                //     thickness: 1, // Optional: to change the thickness of the line
-                //     color: Colors.grey, // Optional: to change the color
-                //   ),
-                // ),
+                _buildDivider(),
                 ListTile(
                   leading: const Icon(Icons.logout),
-                  title: const Text('Logout'),
+                  title: const Text(
+                    'Logout',
+                    style: TextStyle(
+                        color: Colors.black), // Set text color to black
+                  ),
                   onTap: () {
                     _logout(context);
-                  }, // Add logout functionality here
+                  },
                 ),
               ],
             ),
@@ -191,15 +139,26 @@ class MyAccountScreen extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildDivider() {
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      child: Divider(
+        thickness: 1,
+        color: Colors.grey,
+        height: 1, // Reduced height for minimal vertical space
+      ),
+    );
+  }
 }
+
 Future<void> _logout(BuildContext context) async {
-  // Show confirmation dialog
   bool? confirmed = await showDialog<bool>(
     context: context,
     builder: (BuildContext context) {
       return AlertDialog(
         title: const Text('Confirm Logout'),
-        content: const Text('Are you sure you want to log out?'),
+        content: const Text('Are you sure you want to logout ?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
@@ -215,18 +174,9 @@ Future<void> _logout(BuildContext context) async {
   );
 
   if (confirmed == true) {
-    // Clear all SharedPreferences values
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.clear();
 
-    // Navigate to the login screen
     Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
-  }
-
-
-  if (confirmed == true) {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
-    Navigator.pushReplacementNamed(context, '/login');
   }
 }

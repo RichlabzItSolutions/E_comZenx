@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:hygi_health/common/Utils/app_colors.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../data/model/order_model.dart';
 import 'package:provider/provider.dart';
-import '../../../viewmodel/order_view_model.dart'; // Import your OrderViewModel
+import '../../../viewmodel/order_view_model.dart';
+import '../../routs/Approuts.dart'; // Import your OrderViewModel
 
 class OrderCard extends StatefulWidget {
   final Order order;
@@ -30,7 +32,9 @@ class _OrderCardState extends State<OrderCard> {
     String imageUrl = 'assets/mango.png'; // Static fallback image
 
     // Check if the "Cancel" button should be visible
-    bool showCancelButton = (widget.order.orderStatus == 1 || widget.order.orderStatus == 2 || widget.order.orderStatus == 3);
+    bool showCancelButton = (widget.order.orderStatus == 1 ||
+        widget.order.orderStatus == 2 ||
+        widget.order.orderStatus == 3);
 
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -61,13 +65,15 @@ class _OrderCardState extends State<OrderCard> {
                         widget.order.name,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 16, // Adjusted font size for better readability
+                          fontSize:
+                              16, // Adjusted font size for better readability
                         ),
                         overflow: TextOverflow.ellipsis, // Handles long names
                       ),
                       Text(
-                        '1x ₹${widget.order.totalAmount}',
-                        overflow: TextOverflow.ellipsis, // Handles long amount text
+                        '${widget.order.totalItems} * ₹${widget.order.totalAmount}',
+                        overflow: TextOverflow.ellipsis,
+                        // Handles long amount text
                         style: const TextStyle(fontSize: 14),
                       ),
                     ],
@@ -79,18 +85,20 @@ class _OrderCardState extends State<OrderCard> {
                     maxWidth: 100, // Limit the max width of the order status
                   ),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4), // Add padding inside the border
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    // Add padding inside the border
                     decoration: BoxDecoration(
                       border: Border.all(
                         color: widget.order.orderStatus == 1
                             ? Colors.orange // New Order
                             : widget.order.orderStatus == 2
-                            ? Colors.blue // Confirmed
-                            : widget.order.orderStatus == 3
-                            ? Colors.purple // In Transit
-                            : widget.order.orderStatus == 4
-                            ? Colors.green // Delivered
-                            : Colors.red, // Cancelled
+                                ? Colors.blue // Confirmed
+                                : widget.order.orderStatus == 3
+                                    ? Colors.purple // In Transit
+                                    : widget.order.orderStatus == 4
+                                        ? Colors.green // Delivered
+                                        : Colors.red, // Cancelled
                       ),
                       borderRadius: BorderRadius.circular(8), // Rounded corners
                     ),
@@ -98,25 +106,27 @@ class _OrderCardState extends State<OrderCard> {
                       widget.order.orderStatus == 1
                           ? 'New Order'
                           : widget.order.orderStatus == 2
-                          ? 'Confirmed'
-                          : widget.order.orderStatus == 3
-                          ? 'In Transit'
-                          : widget.order.orderStatus == 4
-                          ? 'Delivered'
-                          : 'Cancelled', // Map status to names
+                              ? 'Confirmed'
+                              : widget.order.orderStatus == 3
+                                  ? 'In Transit'
+                                  : widget.order.orderStatus == 4
+                                      ? 'Delivered'
+                                      : 'Cancelled', // Map status to names
                       style: TextStyle(
                         color: widget.order.orderStatus == 1
                             ? Colors.orange
                             : widget.order.orderStatus == 2
-                            ? Colors.blue
-                            : widget.order.orderStatus == 3
-                            ? Colors.purple
-                            : widget.order.orderStatus == 4
-                            ? Colors.green
-                            : Colors.red, // Text color matches the border color
+                                ? Colors.blue
+                                : widget.order.orderStatus == 3
+                                    ? Colors.purple
+                                    : widget.order.orderStatus == 4
+                                        ? Colors.green
+                                        : Colors
+                                            .red, // Text color matches the border color
                         fontWeight: FontWeight.bold,
                       ),
-                      overflow: TextOverflow.ellipsis, // Ensures no overflow of text
+                      overflow:
+                          TextOverflow.ellipsis, // Ensures no overflow of text
                     ),
                   ),
                 ),
@@ -130,7 +140,8 @@ class _OrderCardState extends State<OrderCard> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Order Date: ${widget.order.orderDate}', style: TextStyle(fontSize: 12)),
+                    Text('Order Date: ${widget.order.orderDate}',
+                        style: TextStyle(fontSize: 12)),
                   ],
                 ),
               ],
@@ -138,7 +149,8 @@ class _OrderCardState extends State<OrderCard> {
             const SizedBox(height: 16),
             // Action buttons: Cancel and Track Order, aligned to the right
             Row(
-              mainAxisAlignment: MainAxisAlignment.end, // Align the buttons to the right
+              mainAxisAlignment: MainAxisAlignment.end,
+              // Align the buttons to the right
               children: [
                 // Conditionally show the Cancel Button
                 if (showCancelButton)
@@ -150,7 +162,8 @@ class _OrderCardState extends State<OrderCard> {
                         _showCancelConfirmationDialog(context, widget.order);
                       },
                       style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 10),
                         backgroundColor: Colors.grey[300],
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
@@ -168,11 +181,30 @@ class _OrderCardState extends State<OrderCard> {
                   ),
                 // Track Order Button
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
+                    SharedPreferences prefs =
+                        await SharedPreferences.getInstance();
+                    String? userIdString = prefs.getString('userId');
+                    int userId = int.tryParse(userIdString ?? '') ?? 0;
+                    // Assuming `widget.order.id` is the orderId and `userId` is available in the context
+                    // Replace with actual userId from your context or model
+                    final orderId = widget
+                        .order.id; // Use the orderId from the current order
+
+                    Navigator.pushNamed(
+                      context,
+                      AppRoutes.ORDER_DETAILS,
+                      // Route for the Order Details screen
+                      arguments: {
+                        'userId': userId,
+                        'orderId': orderId,
+                      },
+                    );
                     // Add Track order logic here
                   },
                   style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 10),
                     backgroundColor: AppColors.primaryColor, // Background color
                     foregroundColor: Colors.white, // Text color
                     shape: RoundedRectangleBorder(
@@ -180,7 +212,7 @@ class _OrderCardState extends State<OrderCard> {
                     ),
                   ),
                   child: const Text(
-                    'Track Order',
+                    'View Order',
                     style: TextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.bold,
@@ -228,9 +260,11 @@ class _OrderCardState extends State<OrderCard> {
             TextButton(
               onPressed: () {
                 // Call cancelOrder method from OrderViewModel and pass the reason
-                final orderViewModel = Provider.of<OrderViewModel>(context, listen: false);
+                final orderViewModel =
+                    Provider.of<OrderViewModel>(context, listen: false);
                 String reason = _reasonController.text;
-                orderViewModel.cancelOrder(order.id, reason); // Pass the reason to the cancelOrder method
+                orderViewModel.cancelOrder(context, order.id,
+                    reason); // Pass the reason to the cancelOrder method
                 Navigator.of(context).pop(); // Close the dialog after canceling
               },
               child: const Text('Yes'),

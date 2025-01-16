@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:hygi_health/common/Utils/app_colors.dart';
 import 'package:hygi_health/viewmodel/AddressViewModel.dart';
+import 'package:hygi_health/viewmodel/CartProvider.dart';
 import 'package:hygi_health/viewmodel/base_view_%20model.dart';
 import 'package:hygi_health/viewmodel/category_view_model.dart';
 import 'package:hygi_health/viewmodel/delivery_address_viewmodel.dart';
 import 'package:hygi_health/viewmodel/location_view_model.dart';
 import 'package:hygi_health/viewmodel/myaccount_view_Model.dart';
 import 'package:hygi_health/viewmodel/notification_viewmodel.dart';
+import 'package:hygi_health/viewmodel/order_summary_viewModel.dart';
 import 'package:hygi_health/viewmodel/order_view_model.dart';
 import 'package:hygi_health/viewmodel/product_view_model.dart';
 import 'package:hygi_health/viewmodel/shopping_cart_view_model.dart';
@@ -34,6 +36,9 @@ void main() async {
         ChangeNotifierProvider(create: (_) => SubcategoryViewModel()),
         ChangeNotifierProvider(create: (_) =>OrderViewModel()),
         ChangeNotifierProvider(create: (_) =>LocationViewModel()),
+        ChangeNotifierProvider(create: (_) =>OrderSummaryViewModel()),
+        ChangeNotifierProvider(create: (_) =>CartProvider()),
+
         // Add other providers here if needed
       ],
       child: MyApp(),

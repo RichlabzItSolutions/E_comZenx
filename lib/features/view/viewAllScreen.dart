@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:hygi_health/common/Utils/app_colors.dart';
 import 'package:hygi_health/common/Utils/app_strings.dart';
 import 'package:hygi_health/data/model/category_model.dart'; // Import the Category model
+import 'package:provider/provider.dart';
 import '../../routs/Approuts.dart'; // Import your routes
-import 'ProductScreen.dart'; // Import your ProductCard widget
+import '../../viewmodel/CartProvider.dart';
+import 'ProductScreen.dart';
 
 class ViewAllScreen extends StatefulWidget {
   final List<Category> categories; // List of categories to display
@@ -18,7 +20,7 @@ class _ViewAllScreenState extends State<ViewAllScreen> {
   @override
   Widget build(BuildContext context) {
     final categories = widget.categories;
-
+    final cartProvider = Provider.of<CartProvider>(context);
     return Scaffold(
       appBar: AppBar(
         leading: GestureDetector(
@@ -52,34 +54,46 @@ class _ViewAllScreenState extends State<ViewAllScreen> {
             children: [
               GestureDetector(
                 onTap: () {
-                  print("Cart clicked");
+                  Navigator.pushNamed(
+                      context, AppRoutes.ShoppingCart);
                 },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Image.asset(
                     'assets/cart.png', // Replace with your asset image path
-                    color: Colors.black, // Optional: Apply color filter to the image
-                    width: 38, // Adjust size as needed
+                    color: Colors.black,
+                    // Optional: Apply color filter to the image
+                    width: 38,
+                    // Adjust size as needed
                     height: 38,
                   ),
                 ),
               ),
-              Positioned(
-                right: 8,
-                top: 8,
-                child: CircleAvatar(
-                  radius: 10,
-                  backgroundColor: Colors.red, // Badge background color
-                  child: Text(
-                    '3', // Number of items in the cart
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Colors.white, // Text color for the badge number
+              if (cartProvider.cartItemCount > -1)
+                Positioned(
+                  top: 6,  // Adjust top position to create space between icon and badge
+                  right: 6,  // Adjust right position to create space between icon and badge
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    width: 20,
+                    height: 20,
+                    child: Center(
+                      child: Text(
+                        '${cartProvider.cartItemCount}', // Cart item count
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-              ),
             ],
+
           ),
         ],
       ),
@@ -87,35 +101,36 @@ class _ViewAllScreenState extends State<ViewAllScreen> {
         padding: const EdgeInsets.all(16.0),
         child: categories.isEmpty
             ? const Center(
-          child: Text(
-            "No categories available",
-            style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-          ),
-        )
+                child: Text(
+                  "No categories available",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                ),
+              )
             : GridView.builder(
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-          ),
-          itemCount: categories.length,
-          itemBuilder: (context, index) {
-            final category = categories[index]; // Access individual category
-            return ProductCard(
-              category: category,
-              isLoading: false,
-              onTap: () {
-                Navigator.pushNamed(
-                  context,
-                  AppRoutes.SUBCATEGORY,
-                  arguments: {
-                    'categoryId': category.categoryId, // Pass category ID
-                  },
-                );
-              },
-            );
-          },
-        ),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                ),
+                itemCount: categories.length,
+                itemBuilder: (context, index) {
+                  final category =
+                      categories[index]; // Access individual category
+                  return ProductCard(
+                    category: category,
+                    isLoading: false,
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        AppRoutes.SUBCATEGORY,
+                        arguments: {
+                          'categoryId': category.categoryId, // Pass category ID
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
       ),
     );
   }

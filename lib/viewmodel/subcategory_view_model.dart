@@ -4,28 +4,25 @@ import 'package:hygi_health/common/globally.dart';
 import '../data/model/product_model.dart';
 import '../data/model/subcategory_model.dart';
 
-
 class SubcategoryViewModel extends ChangeNotifier {
-
-
   bool isLoading = false;
   List<Subcategory> subcategories = [];
   List<Product> products = [];
 
-  Future<void> fetchSubcategories(int categoryId,String searchSubCategory) async {
+  Future<void> fetchSubcategories(
+      int categoryId, String searchSubCategory) async {
     isLoading = true;
     notifyListeners();
 
     try {
       // Call the API using authService to get the response
-      final response = await authService.postCategorySubcategory(categoryId,searchSubCategory);
+      final response = await authService.postCategorySubcategory(
+          categoryId, searchSubCategory);
 
       // Ensure the response is valid and contains the expected 'success' key
       // Safely extract the 'subcategories' list
-       subcategories = response;
-
-
-        } catch (e) {
+      subcategories = response;
+    } catch (e) {
       // Log and handle the error scenario
       print('Error fetching subcategories: $e');
       subcategories = []; // Reset to an empty list on error
@@ -35,10 +32,11 @@ class SubcategoryViewModel extends ChangeNotifier {
     isLoading = false;
     notifyListeners();
   }
+
   // Fetch products based on the selected category
 // Fetch products based on the selected category
   Future<void> fetchProducts(ProductFilterRequest payload) async {
-    isLoading = true;  // Set loading to true when fetching products
+    isLoading = true; // Set loading to true when fetching products
     notifyListeners();
 
     try {
@@ -57,11 +55,8 @@ class SubcategoryViewModel extends ChangeNotifier {
       print('Error fetching products: $e');
       // Optionally, set an error flag here and notify the UI
     } finally {
-      isLoading = false;  // Set loading to false once products are fetched
+      isLoading = false; // Set loading to false once products are fetched
       notifyListeners();
     }
   }
-
-
 }
-

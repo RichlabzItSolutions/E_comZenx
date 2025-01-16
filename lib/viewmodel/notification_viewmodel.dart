@@ -64,4 +64,3 @@ class NotificationViewModel extends ChangeNotifier {
     notifyListeners(); // Notify listeners to rebuild the UI
   }
 }
-

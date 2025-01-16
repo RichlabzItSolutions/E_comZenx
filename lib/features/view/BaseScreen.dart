@@ -1,27 +1,40 @@
 import 'package:flutter/material.dart';
 import 'package:hygi_health/common/Utils/app_colors.dart';
+import 'package:provider/provider.dart';
+import '../../routs/Approuts.dart';
+import '../../viewmodel/CartProvider.dart';
 
-class BaseScreen extends StatelessWidget {
-  final String title; // Title for the AppBar
-  final Widget child; // Body content
-  final int cartItemCount; // Cart item count for the badge
-  final bool showShareIcon; // Whether to show the share icon
-  final bool showCartIcon; // Whether to show the cart icon
+class BaseScreen extends StatefulWidget {
+  final String title;
+  final Widget child;
+  final bool showShareIcon;
+  final bool showCartIcon;
 
   const BaseScreen({
     Key? key,
     required this.title,
     required this.child,
-    this.cartItemCount = 0,
     this.showCartIcon = true,
     this.showShareIcon = false,
   }) : super(key: key);
 
   @override
+  _BaseScreenState createState() => _BaseScreenState();
+}
+
+class _BaseScreenState extends State<BaseScreen> {
+  @override
+  void initState() {
+    super.initState();
+    // Fetch cart data when screen is initialized
+    Provider.of<CartProvider>(context, listen: false).fetchCartData();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor:AppColors.toolbarbackgound,
+        backgroundColor: Colors.white,
         elevation: 1,
         leading: GestureDetector(
           onTap: () {
@@ -41,14 +54,14 @@ class BaseScreen extends StatelessWidget {
           ),
         ),
         title: Text(
-          title,
+          widget.title,
           style: TextStyle(
             color: Colors.black, // Title text color
           ),
         ),
         actions: [
           // Share icon with border color #1A73FC
-          if (showShareIcon)
+          if (widget.showShareIcon)
             IconButton(
               icon: Container(
                 padding: EdgeInsets.all(6),
@@ -62,7 +75,7 @@ class BaseScreen extends StatelessWidget {
                 ),
                 child: Icon(
                   Icons.share,
-                  color: AppColors.primaryColor, // Icon color to match the border
+                  color: AppColors.primaryColor // Icon color to match the border
                 ),
               ),
               onPressed: () {
@@ -70,39 +83,44 @@ class BaseScreen extends StatelessWidget {
               },
             ),
           // Cart icon with badge
-          if (showCartIcon)
-            Stack(
-              children: [
-                IconButton(
-                  icon: Icon(
-                    Icons.shopping_cart,
-                    color: Colors.black, // Cart icon color
-                  ),
-                  onPressed: () {
-                    print("Cart clicked");
-                  },
-                ),
-                if (cartItemCount > 0)
-                  Positioned(
-                    right: 8, // Position the badge at the top-right of the icon
-                    top: 8,
-                    child: CircleAvatar(
-                      radius: 10,
-                      backgroundColor: Colors.red, // Badge background color
-                      child: Text(
-                        '$cartItemCount', // Number of items in the cart
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.white, // Text color for the number
+          if (widget.showCartIcon)
+            Consumer<CartProvider>(
+              builder: (context, cartProvider, child) {
+                return Stack(
+                  children: [
+                    IconButton(
+                      icon: Icon(
+                        Icons.shopping_cart,
+                        color: Colors.black, // Cart icon color
+                      ),
+                      onPressed: () {
+                        Navigator.pushNamed(
+                            context, AppRoutes.ShoppingCart);
+                      },
+                    ),
+                    if (cartProvider.cartItemCount > -1)
+                      Positioned(
+                        right: 8, // Position the badge at the top-right of the icon
+                        top: 8,
+                        child: CircleAvatar(
+                          radius: 10,
+                          backgroundColor: Colors.red, // Badge background color
+                          child: Text(
+                            '${cartProvider.cartItemCount}', // Number of items in the cart
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.white, // Text color for the number
+                            ),
+                          ),
                         ),
                       ),
-                    ),
-                  ),
-              ],
+                  ],
+                );
+              },
             ),
         ],
       ),
-      body: child,
+      body: widget.child,
     );
   }
 }

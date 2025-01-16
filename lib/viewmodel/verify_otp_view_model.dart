@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:hygi_health/common/Utils/app_colors.dart';
-import 'package:hygi_health/data/model/verify_otp_response_model.dart';
 import 'package:hygi_health/viewmodel/base_view_ model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -10,19 +9,26 @@ import '../data/model/request_user_data.dart';
 import '../data/model/verify_otp_model.dart';
 
 class VerifyOtpViewModel extends BaseViewModel {
-  final List<TextEditingController> _controllers = List.generate(4, (_) => TextEditingController());
+  final List<TextEditingController> _controllers =
+      List.generate(4, (_) => TextEditingController());
   Timer? _timer;
-  int _start = 140;
+  int _start = 60;
   bool _canResend = false;
   bool _isOtpVerified = false;
   String _otp = '';
   String _errorMessage = '';
   String? _successMessage;
+
   String get otp => _otp;
+
   String get errorMessage => _errorMessage;
+
   bool get canResend => _canResend;
+
   int get start => _start;
+
   bool get isOtpVerified => _isOtpVerified;
+
   List<TextEditingController> get controllers => _controllers;
 
   VerifyOtpViewModel() {
@@ -40,7 +46,7 @@ class VerifyOtpViewModel extends BaseViewModel {
 
   void _startTimer() {
     _canResend = false;
-    _start = 140;
+    _start = 60;
     _isOtpVerified = false;
     notifyListeners();
 
@@ -97,12 +103,10 @@ class VerifyOtpViewModel extends BaseViewModel {
     }
   }
 
-
-
-
-
   Future<void> verifyOtp(BuildContext context) async {
-    _otp = _controllers.map((controller) => controller.text).join(); // Combine all OTP fields
+    _otp = _controllers
+        .map((controller) => controller.text)
+        .join(); // Combine all OTP fields
 
     if (_otp.length == 4) {
       _isOtpVerified = false; // Initially mark as not verified
@@ -118,12 +122,12 @@ class VerifyOtpViewModel extends BaseViewModel {
         }
 
         // Create the request object
-        final user = VerifyOtpModelRequest(mobile:mobile, otp: _otp);
+        final user = VerifyOtpModelRequest(mobile: mobile, otp: _otp);
 
         // Call the API to verify OTP
         final result = await authService.verifyOtp(user);
-        _isOtpVerified=true;
-        _successMessage = result as String?;
+        _isOtpVerified = true;
+        _successMessage = result;
         _errorMessage = ''; // Clear any previous error
         _isOtpVerified = true; // Mark as verified
         notifyListeners();
@@ -142,7 +146,7 @@ class VerifyOtpViewModel extends BaseViewModel {
         // Handle errors and display the error message
         _errorMessage = e.toString();
         notifyListeners();
-        _isOtpVerified=false;
+        _isOtpVerified = false;
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text("Error: $_errorMessage"),

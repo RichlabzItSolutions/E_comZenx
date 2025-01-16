@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 
 
 class MyAccountViewModel extends ChangeNotifier {
-  File? _profileImage;
+  //File? _profileImage;
   // final ImagePicker _picker = ImagePicker();
   //
   // File? get profileImage => _profileImage;

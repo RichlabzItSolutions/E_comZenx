@@ -1,12 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../common/globally.dart';
 import '../data/model/DeliveryAddress.dart';
 import '../data/model/PaymentMethod.dart';
 import '../data/model/confirm_order_response.dart';
 import '../data/model/confirmorder.dart';
-import '../features/view/widgets/OrderConfirmationPage.dart';
 import '../routs/Approuts.dart';
 
 class DeliveryViewModel extends ChangeNotifier {
@@ -18,7 +16,7 @@ class DeliveryViewModel extends ChangeNotifier {
   // Payment methods
   List<PaymentMethod> _paymentMethods = [
     PaymentMethod(type: "Cash", isSelected: true),
-    PaymentMethod(type: "Online Payment", isSelected: false),
+    // PaymentMethod(type: "Online Payment", isSelected: false),
   ];
 
   // Getters

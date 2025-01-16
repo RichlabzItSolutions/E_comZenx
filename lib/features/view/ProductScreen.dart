@@ -22,14 +22,16 @@ class ProductCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
-          color: AppColors.backgroundColor, // Set the background color to #F6F6F6
-          borderRadius: BorderRadius.circular(12), // Rounded corners
+          color: AppColors.backgroundColor,
+          // Set the background color to #F6F6F6
+          borderRadius: BorderRadius.circular(12),
+          // Rounded corners
           boxShadow: const [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 4,
-              spreadRadius: 2,
-            ),
+            // BoxShadow(
+            //   color: Colors.black12,
+            //   blurRadius: 4,
+            //   spreadRadius: 2,
+            // ),
           ],
         ),
         child: Column(
@@ -38,41 +40,42 @@ class ProductCard extends StatelessWidget {
             isLoading
                 ? const CircularProgressIndicator() // Show loading indicator if true
                 : category.appIcon.isNotEmpty
-                ? Image.network(
-              category.appIcon, // Dynamically display the category icon
-              width: 67,
-              height: 67,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return const Icon(
-                  Icons.category, // Default icon if loading fails
-                  size: 67,
-                  color: AppColors.primaryColor,
-                );
-              },
-            )
-                : const Icon(
-              Icons.category, // Default icon if no icon is provided
-              size: 67,
-              color: AppColors.primaryColor,
-            ),
+                    ? Image.network(
+                        category
+                            .appIcon, // Dynamically display the category icon
+                        width: 67,
+                        height: 67,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Icon(
+                            Icons.category, // Default icon if loading fails
+                            size: 67,
+                            color: AppColors.primaryColor,
+                          );
+                        },
+                      )
+                    : const Icon(
+                        Icons.category, // Default icon if no icon is provided
+                        size: 67,
+                        color: AppColors.primaryColor,
+                      ),
             const SizedBox(height: 16), // Space between the icon and the title
             isLoading
                 ? const SizedBox.shrink() // No title when loading
                 : Text(
-              AppConstants.capitalizeFirstLetter(category.categoryTitle), // Capitalize first letter of categoryTitle
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 14,
-                color: Colors.black, // Optional styling
-                fontWeight: FontWeight.w600, // Optional styling
-              ),
-            ),
+                    AppConstants.capitalizeFirstLetter(category.categoryTitle),
+                    // Capitalize first letter of categoryTitle
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.black, // Optional styling
+                      fontWeight: FontWeight.w600, // Optional styling
+                    ),
+                  ),
           ],
         ),
       ),
     );
   }
-  // Function to capitalize the first letter of categoryTitle and keep the rest lowercase
-
+// Function to capitalize the first letter of categoryTitle and keep the rest lowercase
 }

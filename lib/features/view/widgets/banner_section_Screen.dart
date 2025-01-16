@@ -1,10 +1,8 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../../common/Utils/app_colors.dart';
 import '../../../viewmodel/slide_view_model.dart';
- // Ensure this import path is correct
 
 class BannerSection extends StatefulWidget {
   @override
@@ -20,7 +18,7 @@ class _BannerSectionState extends State<BannerSection> {
     // Fetch banners when the widget is first built
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final viewModel = Provider.of<SliderViewModel>(context, listen: false);
-      viewModel.fetchBanners();  // Fetch the banners from the API
+      viewModel.fetchBanners(); // Fetch the banners from the API
       viewModel.startAutoScroll(_pageController);
     });
   }
@@ -41,7 +39,8 @@ class _BannerSectionState extends State<BannerSection> {
         if (viewModel.isLoading) {
           return Container(
             color: Colors.white,
-            child: Center(child: CircularProgressIndicator()),  // Display the spinner here
+            child: Center(
+                child: CircularProgressIndicator()), // Display the spinner here
           );
         }
 
@@ -66,9 +65,11 @@ class _BannerSectionState extends State<BannerSection> {
                       return ClipRRect(
                         borderRadius: BorderRadius.circular(8),
                         child: Image.network(
-                          viewModel.banners[index], // Dynamically load image from the URL
+                          viewModel.banners[index],
+                          // Dynamically load image from the URL
                           width: MediaQuery.of(context).size.width,
-                          height: 120, // Height set to match the SizedBox height
+                          height: 120,
+                          // Height set to match the SizedBox height
                           fit: BoxFit.cover,
                         ),
                       );
@@ -83,7 +84,7 @@ class _BannerSectionState extends State<BannerSection> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: List.generate(
                     viewModel.banners.length, // Dynamic number of banners
-                        (index) => Container(
+                    (index) => Container(
                       margin: EdgeInsets.symmetric(horizontal: 4),
                       width: 8,
                       height: 8,

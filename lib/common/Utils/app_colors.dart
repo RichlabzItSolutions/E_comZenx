@@ -7,7 +7,6 @@ class AppColors {
   static const Color errorColor = Color(0xFFEA4335);
   static const Color toolbarbackgound = Color(0xFFF6F6F6);
  // login
-
   static const Color textbg = Color(0xFF848484);
 
 

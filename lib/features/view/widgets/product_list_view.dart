@@ -5,13 +5,17 @@ import 'package:hygi_health/features/view/product_item.dart'; // Assuming you ha
 
 class ProductListView extends StatelessWidget {
   final String searchTerm;
+
   ProductListView({required this.searchTerm});
+
   @override
   Widget build(BuildContext context) {
     final subcategoryViewModel = Provider.of<SubcategoryViewModel>(context);
     // Filter products based on searchTerm
     final filteredProducts = subcategoryViewModel.products.where((product) {
-      return product.productTitle.toLowerCase().contains(searchTerm.toLowerCase());
+      return product.productTitle
+          .toLowerCase()
+          .contains(searchTerm.toLowerCase());
     }).toList();
 
     return ListView.builder(

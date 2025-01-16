@@ -1,7 +1,5 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:hygi_health/data/model/subscribe_model.dart';
 
 class SubscribeViewModel extends ChangeNotifier {
   int quantity = 1;
@@ -25,6 +23,3 @@ class SubscribeViewModel extends ChangeNotifier {
     selectedTime = time;
   }
 }
-
-
-

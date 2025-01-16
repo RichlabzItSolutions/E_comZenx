@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hygi_health/common/Utils/app_colors.dart';
 import 'package:hygi_health/common/Utils/app_strings.dart';
 import 'package:provider/provider.dart';
 import 'package:hygi_health/features/view/widgets/horizontal_category_list.dart';
@@ -9,7 +10,6 @@ import 'package:hygi_health/features/view/BaseScreen.dart';
 class CategoryView extends StatefulWidget {
   final int categoryId;
   final int position; // Add position parameter
-
   // Constructor to accept categoryId and position dynamically
   CategoryView({required this.categoryId, required this.position});
 
@@ -44,25 +44,24 @@ class _CategoryViewState extends State<CategoryView> {
   }
 
   void _fetchSubcategories() {
-    final subcategoryViewModel = Provider.of<SubcategoryViewModel>(context, listen: false);
+    final subcategoryViewModel =
+        Provider.of<SubcategoryViewModel>(context, listen: false);
     // Fetch subcategories without using the search term
     subcategoryViewModel.fetchSubcategories(currentCategoryId, "");
   }
 
   @override
   Widget build(BuildContext context) {
-    final subcategoryViewModel = Provider.of<SubcategoryViewModel>(context);
-
     return BaseScreen(
       title: AppStrings.allCategories,
-      cartItemCount: 3, // Set the number of cart items
+      // Set the number of cart items
       showCartIcon: true,
       showShareIcon: false,
       child: Container(
-        color: Colors.white, // Apply white background
+        color: Colors.white,
+        padding: EdgeInsets.zero, // Apply white background
         child: Column(
           children: [
-            const SizedBox(height: 16), // Add spacing
             HorizontalCategoryList(
               onCategorySelected: (selectedCategoryId) {
                 setState(() {
@@ -71,28 +70,51 @@ class _CategoryViewState extends State<CategoryView> {
                 // Fetch subcategories for the selected category
                 _fetchSubcategories();
               },
-              selectedPosition: widget.position, // Pass the position to HorizontalCategoryList
+              selectedPosition: widget
+                  .position, // Pass the position to HorizontalCategoryList
             ),
             const SizedBox(height: 16), // Add spacing
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: TextField(
-                decoration: InputDecoration(
-                  labelText: "Search products", // Placeholder text for search
-                  border: OutlineInputBorder(),
-                  suffixIcon: Icon(Icons.search),
+              child: Material(
+                borderRadius: BorderRadius.circular(8.0),
+                elevation: 4.0,
+                child: TextField(
+                  decoration: InputDecoration(
+                    labelText: "Search products",
+                    // Placeholder text for search
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0),
+                    // Reduced height
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide.none, // Removes the default border
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8.0),
+                      borderSide: BorderSide(
+                          color: AppColors.primaryColor,
+                          width: 2.0), // Highlight border
+                    ),
+                    suffixIcon: Icon(Icons.search),
+                    filled: true,
+                    fillColor: Colors.grey.shade100,
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      searchSubCategory = value; // Update the search term
+                    });
+                    // Fetch products or filter based on the search term (handled in ProductListView)
+                  },
                 ),
-                onChanged: (value) {
-                  setState(() {
-                    searchSubCategory = value; // Update the search term
-                  });
-                  // Fetch products or filter based on the search term (handled in ProductListView)
-                },
               ),
             ),
-            const SizedBox(height: 16), // Add spacing
+            const SizedBox(height: 16),
+// Add spacing
             Expanded(
-              child: ProductListView(searchTerm: searchSubCategory), // Pass the search term to ProductListView
+              child: ProductListView(
+                  searchTerm:
+                      searchSubCategory), // Pass the search term to ProductListView
             ),
           ],
         ),

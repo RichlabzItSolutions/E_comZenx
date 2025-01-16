@@ -36,6 +36,7 @@ class Order {
   final String orderRefNumber;
   final String orderDate;
   final String totalAmount;
+  final String? totalItems;
   final String gst;
   final String discount;
   final double finalAmount;
@@ -44,7 +45,7 @@ class Order {
   final int paymentStatus;
   final int paymentMode;
   final String? createdIpAddress;
-  final int orderStatus;
+  late final int orderStatus;
   final String? paymentRefNumber;
   final String? cancelledReason;
   final String createdOn;
@@ -59,10 +60,11 @@ class Order {
     required this.orderRefNumber,
     required this.orderDate,
     required this.totalAmount,
+    required this.totalItems,
+    required this.shippingCharges,
     required this.gst,
     required this.discount,
     required this.finalAmount,
-    required this.shippingCharges,
     required this.payableAmount,
     required this.paymentStatus,
     required this.paymentMode,
@@ -84,6 +86,7 @@ class Order {
       orderRefNumber: json['orderRefNumber'] as String,
       orderDate: json['orderDate'] as String,
       totalAmount: json['totalAmount'] as String,
+      totalItems: json['totalItems'] as String?,
       gst: json['gst'] as String,
       discount: json['discount'] as String,
       finalAmount: (json['finalAmount'] as num).toDouble(),

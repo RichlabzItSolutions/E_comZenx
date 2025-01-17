@@ -94,11 +94,9 @@ class _SubcategoryListPageState extends State<SubcategoryListPage> {
                   clipBehavior: Clip.none,
                   children: [
                     IconButton(
-                      icon: Image.asset(
-                        'assets/cart.png', // Replace with your asset image path
-                        color: Colors.black,
-                        width: 38,
-                        height: 38,
+                      icon: Icon(
+                        Icons.shopping_cart,
+                        color: Colors.black, // Cart icon color
                       ),
                       onPressed: () {
                         // Navigate to the cart screen
@@ -108,8 +106,8 @@ class _SubcategoryListPageState extends State<SubcategoryListPage> {
                     ),
                     if (cartProvider.cartItemCount > -1)
                       Positioned(
-                        top: 6,  // Adjust top position to create space between icon and badge
-                        right: 6,  // Adjust right position to create space between icon and badge
+                        top: 1,  // Adjust top position to create space between icon and badge
+                        right: 1,  // Adjust right position to create space between icon and badge
                         child: Container(
                           decoration: BoxDecoration(
                             color: Colors.red,

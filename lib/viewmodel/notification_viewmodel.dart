@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../data/model/notification_model.dart';
-import '../data/model/notification_model.dart';
+
 
 class NotificationViewModel extends ChangeNotifier {
   final List<NotificationModel> _notifications = [

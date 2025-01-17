@@ -10,7 +10,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../common/Utils/app_colors.dart';
 import '../../data/model/location_model.dart';
 import '../../routs/Approuts.dart'; // Update the import for your routes
-
 import '../../viewmodel/CartProvider.dart';
 import '../../viewmodel/category_view_model.dart';
 import '../../viewmodel/location_view_model.dart';
@@ -24,7 +23,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final PageController _pageController = PageController();
   int _selectedIndex = 0; // Track selected bottom navigation tab
-  bool isFetching = false;  // Flag to track if request is in progress
+  bool isFetching = false; // Flag to track if request is in progress
 
   @override
   void dispose() {
@@ -37,7 +36,6 @@ class _HomePageState extends State<HomePage> {
       _selectedIndex = index;
     });
   }
-
   Future<void> _handlePageRefresh() async {
     if (isFetching) return; // Prevent multiple requests
     setState(() {
@@ -45,7 +43,8 @@ class _HomePageState extends State<HomePage> {
     });
 
     try {
-      final categoryViewModel = Provider.of<CategoryViewModel>(context, listen: false);
+      final categoryViewModel =
+          Provider.of<CategoryViewModel>(context, listen: false);
       final cartProvider = Provider.of<CartProvider>(context, listen: false);
       await Future.wait([
         categoryViewModel.fetchCategories(),
@@ -60,11 +59,10 @@ class _HomePageState extends State<HomePage> {
       });
     }
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.green.shade50,
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: _buildBodyContent(_selectedIndex),
       ),
@@ -106,32 +104,42 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _buildBodyContent(int index) {
-    switch (index) {
-      case 0:
-        return HomeContent(onRefresh: _handlePageRefresh);
-      case 1:
-        return ShoppingCartScreen();
-      case 2:
-        return OrderTabsView();
-      case 3:
-        return MyAccountScreen();
-      default:
-        return Center(
-          child: Text(
-            "Other Page",
-            style: TextStyle(
-              fontSize: MediaQuery.of(context).textScaleFactor * 20,
-              fontWeight: FontWeight.bold,
+    return WillPopScope(
+      onWillPop: () async {
+        if (index != 0) {
+          // Navigate to the Home page when back button is pressed
+          setState(() {
+            _selectedIndex = 0; // Replace _currentIndex with your actual index variable
+          });
+          return false; // Prevent default back navigation
+        }
+        return true; // Allow default back navigation when on the Home page
+      },
+      child: IndexedStack(
+        index: index,
+        children: [
+          HomeContent(onRefresh: _handlePageRefresh),
+          ShoppingCartScreen(),
+          OrderTabsView(),
+          MyAccountScreen(),
+          Center(
+            child: Text(
+              "Other Page",
+              style: TextStyle(
+                fontSize: MediaQuery.of(context).textScaleFactor * 20,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-        );
-    }
+        ],
+      ),
+    );
   }
+
 }
 
-
 class HomeContent extends StatefulWidget {
-  final Future<void> Function() onRefresh;  // Pass refresh function
+  final Future<void> Function() onRefresh; // Pass refresh function
 
   HomeContent({required this.onRefresh});
 
@@ -148,7 +156,7 @@ class _HomeContentState extends State<HomeContent> {
     final cartProvider = Provider.of<CartProvider>(context);
 
     return RefreshIndicator(
-      onRefresh: widget.onRefresh,  // Use parent function for refresh
+      onRefresh: widget.onRefresh, // Use parent function for refresh
       child: SingleChildScrollView(
         child: Column(
           children: [
@@ -169,7 +177,9 @@ class _HomeContentState extends State<HomeContent> {
                           Text(
                             AppStrings.allCategories,
                             style: TextStyle(
-                              fontSize: 22 * MediaQuery.of(context).textScaleFactor, // Adjust text size
+                              fontSize: 22 *
+                                  MediaQuery.of(context)
+                                      .textScaleFactor, // Adjust text size
                               fontWeight: FontWeight.bold,
                               color: Colors.black,
                             ),
@@ -178,7 +188,8 @@ class _HomeContentState extends State<HomeContent> {
                           Text(
                             AppStrings.byfromAnyCategory,
                             style: TextStyle(
-                              fontSize: 14 * MediaQuery.of(context).textScaleFactor,
+                              fontSize:
+                                  14 * MediaQuery.of(context).textScaleFactor,
                               color: Colors.black54,
                             ),
                           ),
@@ -197,7 +208,8 @@ class _HomeContentState extends State<HomeContent> {
                             Text(
                               AppStrings.viewAll,
                               style: TextStyle(
-                                fontSize: 14 * MediaQuery.of(context).textScaleFactor,
+                                fontSize:
+                                    14 * MediaQuery.of(context).textScaleFactor,
                                 fontWeight: FontWeight.bold,
                                 color: AppColors.primaryColor,
                               ),
@@ -217,33 +229,35 @@ class _HomeContentState extends State<HomeContent> {
                   categoryViewModel.isLoading
                       ? Center(child: CircularProgressIndicator())
                       : GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 16,
-                      mainAxisSpacing: 16,
-                    ),
-                    shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: categoryViewModel.categories.length < 4
-                        ? categoryViewModel.categories.length
-                        : 4,
-                    itemBuilder: (context, index) {
-                      final category = categoryViewModel.categories[index];
-                      return ProductCard(
-                        category: category,
-                        isLoading: categoryViewModel.isLoading,
-                        onTap: () {
-                          Navigator.pushNamed(
-                            context,
-                            AppRoutes.SUBCATEGORY,
-                            arguments: {
-                              'categoryId': category.categoryId
-                            },
-                          );
-                        },
-                      );
-                    },
-                  ),
+                          gridDelegate:
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 16,
+                            mainAxisSpacing: 16,
+                          ),
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: categoryViewModel.categories.length < 4
+                              ? categoryViewModel.categories.length
+                              : 4,
+                          itemBuilder: (context, index) {
+                            final category =
+                                categoryViewModel.categories[index];
+                            return ProductCard(
+                              category: category,
+                              isLoading: categoryViewModel.isLoading,
+                              onTap: () {
+                                Navigator.pushNamed(
+                                  context,
+                                  AppRoutes.SUBCATEGORY,
+                                  arguments: {
+                                    'categoryId': category.categoryId
+                                  },
+                                );
+                              },
+                            );
+                          },
+                        ),
                 ],
               ),
             ),
@@ -253,8 +267,6 @@ class _HomeContentState extends State<HomeContent> {
     );
   }
 }
-
-
 
 class HeaderSection extends StatefulWidget {
   @override
@@ -271,7 +283,8 @@ class _HeaderSectionState extends State<HeaderSection> {
   }
 
   Future<void> _initializeLocation() async {
-    final locationViewModel = Provider.of<LocationViewModel>(context, listen: false);
+    final locationViewModel =
+        Provider.of<LocationViewModel>(context, listen: false);
 
     // Check if locations have been fetched already
     if (locationViewModel.locations.isEmpty) {
@@ -283,7 +296,7 @@ class _HeaderSectionState extends State<HeaderSection> {
 
     if (locationId != 0) {
       final location = locationViewModel.locations.firstWhere(
-              (loc) => loc.id == locationId,
+          (loc) => loc.id == locationId,
           orElse: () => Location(
               id: 0,
               location: "Select Location",
@@ -294,14 +307,15 @@ class _HeaderSectionState extends State<HeaderSection> {
         _selectedLocation = location;
       });
     } else {
-      showLocationPopup(context);  // Show location popup if not set
+      showLocationPopup(context); // Show location popup if not set
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final locationViewModel = Provider.of<LocationViewModel>(context);
-    final cartProvider = Provider.of<CartProvider>(context); // Get cartProvider here
+    final cartProvider =
+        Provider.of<CartProvider>(context); // Get cartProvider here
 
     if (locationViewModel.isLoading) {
       return Center(child: CircularProgressIndicator());
@@ -309,49 +323,73 @@ class _HeaderSectionState extends State<HeaderSection> {
 
     if (locationViewModel.errorMessage.isNotEmpty) {
       return Center(
-        child: Text('Error: ${locationViewModel.errorMessage}', style: TextStyle(color: Colors.red)),
+        child: Text('Error: ${locationViewModel.errorMessage}',
+            style: TextStyle(color: Colors.red)),
       );
     }
 
     return Container(
-      color: Colors.grey[200],
-      padding: const EdgeInsets.all(16.0),
+      color: AppColors.secondaryColor,
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            height: 80,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Shop Name',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Shop Name',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
                 ),
-                locationViewModel.locations.isNotEmpty
-                    ? DropdownButton<Location>(
-                  hint: Text('Select Location'),
-                  value: _selectedLocation,
-                  onChanged: (Location? newValue) {
-                    setState(() {
-                      _selectedLocation = newValue;
-                    });
-                    if (newValue != null) {
-                      SharedPreferences.getInstance().then((prefs) {
-                        prefs.setInt('location', newValue.id);
-                      });
-                    }
-                  },
-                  items: locationViewModel.locations
-                      .map<DropdownMenuItem<Location>>((Location location) {
-                    return DropdownMenuItem<Location>(value: location, child: Text(location.location));
-                  }).toList(),
-                )
-                    : Text('No locations available'),
-              ],
+              ),
+        locationViewModel.locations.isNotEmpty
+            ? DropdownButtonHideUnderline(
+          child: DropdownButton<Location>(
+            isDense: true, // Makes the dropdown compact
+            value: _selectedLocation,
+            icon: Icon(Icons.arrow_drop_down, color: Colors.black),
+            dropdownColor: Colors.white,
+            alignment: AlignmentDirectional.centerEnd, // Align selected text near the icon
+            onChanged: (Location? newValue) {
+              setState(() {
+                _selectedLocation = newValue;
+              });
+              if (newValue != null) {
+                SharedPreferences.getInstance().then((prefs) {
+                  prefs.setInt('location', newValue.id);
+                });
+              }
+            },
+            items: locationViewModel.locations
+                .map<DropdownMenuItem<Location>>((Location location) {
+              return DropdownMenuItem<Location>(
+                value: location,
+                child: Text(
+                  location.location,
+                  textAlign: TextAlign.left, // Align each dropdown item text to the left
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              );
+            }).toList(),
+            hint: Text(
+              'Select Location',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
-          SizedBox(height: 20),
+        )
+            : Text('No locations available'),
+            ],
+          ),
+          SizedBox(height: 16),
           Row(
             children: [
               Expanded(
@@ -359,12 +397,31 @@ class _HeaderSectionState extends State<HeaderSection> {
                   onTap: () {
                     Navigator.pushNamed(context, AppRoutes.GLOBAL_SEARCH);
                   },
-                  child: TextField(
-                    enabled: false,
-                    decoration: InputDecoration(
-                      hintText: 'Search Product',
-                      suffixIcon: Icon(Icons.search),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                  child: Container(
+                    height: 45,
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.3),
+                          spreadRadius: 1,
+                          blurRadius: 3,
+                          offset: Offset(0, 2), // Shadow position
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            AppStrings.searchproduct,
+                            style: TextStyle(color: Colors.grey),
+                          ),
+                        ),
+                        Icon(Icons.search, color: Colors.black),
+                      ],
                     ),
                   ),
                 ),
@@ -377,44 +434,47 @@ class _HeaderSectionState extends State<HeaderSection> {
                     onTap: () {
                       Navigator.pushNamed(context, AppRoutes.ShoppingCart);
                     },
-                    child: Image.asset(
-                      'assets/cart.png',
-                      color: Colors.black,
-                      width: 38,
-                      height: 38,
+                    child: Icon(
+                      Icons.shopping_cart,
+                      color: Colors.black, // Cart icon color
+                      size: 28, // Adjust size if needed
                     ),
                   ),
-                  if (cartProvider.cartItemCount > -1)
+                  if (cartProvider.cartItemCount >=0) // Show badge only when items exist
                     Positioned(
-                      top: -6,
-                      right: -6,
+                      top: -10,
+                      right: -10,
                       child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
                         width: 20,
                         height: 20,
+                        decoration: BoxDecoration(
+                          color: Colors.red, // Badge background color
+                          borderRadius: BorderRadius.circular(12),
+                        ),
                         child: Center(
                           child: Text(
-                            '${cartProvider.cartItemCount}',
-                            style: TextStyle(fontSize: 12, color: Colors.white, fontWeight: FontWeight.bold),
+                            '${cartProvider.cartItemCount}', // Display cart item count
+                            style: TextStyle(
+                              fontSize: 12, // Font size for the badge text
+                              color: Colors.white, // Text color
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
                     ),
                 ],
               ),
+
             ],
           ),
         ],
       ),
     );
+
   }
 
   void showLocationPopup(BuildContext context) {
-    final locationViewModel =
-    Provider.of<LocationViewModel>(context, listen: false);
     showDialog(
       context: context,
       barrierDismissible: true,
@@ -464,26 +524,26 @@ class _HeaderSectionState extends State<HeaderSection> {
                     const SizedBox(height: 16),
                     locationViewModel.locations.isNotEmpty
                         ? DropdownButtonFormField<Location>(
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                      ),
-                      hint: const Text("Select Location"),
-                      value: _selectedLocation,
-                      items: locationViewModel.locations
-                          .map((Location location) {
-                        return DropdownMenuItem<Location>(
-                          value: location,
-                          child: Text(location.location),
-                        );
-                      }).toList(),
-                      onChanged: (Location? newValue) {
-                        setState(() {
-                          _selectedLocation = newValue;
-                        });
-                      },
-                    )
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
+                            ),
+                            hint: const Text("Select Location"),
+                            value: _selectedLocation,
+                            items: locationViewModel.locations
+                                .map((Location location) {
+                              return DropdownMenuItem<Location>(
+                                value: location,
+                                child: Text(location.location),
+                              );
+                            }).toList(),
+                            onChanged: (Location? newValue) {
+                              setState(() {
+                                _selectedLocation = newValue;
+                              });
+                            },
+                          )
                         : const Text('No locations available'),
                     const SizedBox(height: 20),
                     ElevatedButton(
@@ -523,7 +583,3 @@ class _HeaderSectionState extends State<HeaderSection> {
     );
   }
 }
-
-
-
-

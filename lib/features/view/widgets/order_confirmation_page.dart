@@ -25,7 +25,7 @@ class OrderConfirmationPage extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            Navigator.pushNamed(context, AppRoutes.HOME);
+            Navigator.pushReplacementNamed(context, AppRoutes.HOME);
           },
         ),
       ),
@@ -73,7 +73,7 @@ class OrderConfirmationPage extends StatelessWidget {
               const SizedBox(height: 40),
               ElevatedButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.MYORDERS);
+                  Navigator.pushReplacementNamed(context, AppRoutes.MYORDERS);
                 },
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 50),
@@ -86,7 +86,7 @@ class OrderConfirmationPage extends StatelessWidget {
               const SizedBox(height: 10),
               TextButton(
                 onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.HOME);
+                  Navigator.pushReplacementNamed(context, AppRoutes.HOME);
                 },
                 child: Text(
                   'Back to Home',

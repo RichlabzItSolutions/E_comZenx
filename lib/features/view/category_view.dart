@@ -81,7 +81,7 @@ class _CategoryViewState extends State<CategoryView> {
                 elevation: 4.0,
                 child: TextField(
                   decoration: InputDecoration(
-                    labelText: "Search products",
+                    labelText: AppStrings.searchProduct,
                     // Placeholder text for search
                     contentPadding:
                         EdgeInsets.symmetric(vertical: 10.0, horizontal: 12.0),

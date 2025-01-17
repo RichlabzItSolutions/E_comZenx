@@ -34,11 +34,12 @@ class _BaseScreenState extends State<BaseScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: AppColors.backgroundColor,
         elevation: 1,
         leading: GestureDetector(
           onTap: () {
-            Navigator.pop(context); // Handles back navigation
+            Navigator.pushReplacementNamed(
+                context, AppRoutes.HOME); // Handles back navigation
           },
           child: Container(
             padding: EdgeInsets.all(8),
@@ -100,8 +101,8 @@ class _BaseScreenState extends State<BaseScreen> {
                     ),
                     if (cartProvider.cartItemCount > -1)
                       Positioned(
-                        right: 8, // Position the badge at the top-right of the icon
-                        top: 8,
+                        top: 1,  // Adjust top position to create space between icon and badge
+                        right: 1,
                         child: CircleAvatar(
                           radius: 10,
                           backgroundColor: Colors.red, // Badge background color

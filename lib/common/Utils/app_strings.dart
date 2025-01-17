@@ -29,6 +29,7 @@ class AppStrings {
   static const String pleaseEnterMobileNumber = "Mobile Number";
   static const String pleaseEnterValidMobileNumber = "Mobile number must be 10 digits";
   static const String otp = "OTP";
+  static const String searchproduct = "Search Product By Name";
   static const String sentOtp = "Send OTP";
   static const String otpSent = "OTP sent to your mobile.";
   static const String forgotPassword = "Forgot Password?";
@@ -50,7 +51,7 @@ class AppStrings {
 
 
   // home dashboard labels
-  static const String allCategories = "All Categories";
+  static const String allCategories = "All Sub Categories";
 
 
   static const String byfromAnyCategory = "Buy from any category";

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:hygi_health/common/Utils/app_colors.dart';
 import 'package:provider/provider.dart';
+import '../../../routs/Approuts.dart';
 import '../../../viewmodel/order_view_model.dart';
 import '../order_listView.dart'; // Assuming you have OrderListView
 
@@ -44,19 +45,29 @@ class _OrderTabsViewState extends State<OrderTabsView>
     final orderViewModel = Provider.of<OrderViewModel>(context);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFFF6F6F6),
+        backgroundColor: AppColors.backgroundColor,
         // AppBar background
         elevation: 1,
         leading: GestureDetector(
           onTap: () {
-            Navigator.pop(context); // Handle back navigation
+            Navigator.pushReplacementNamed(
+                context, AppRoutes.HOME); // Navigate back
           },
+          child: Container(
+            padding: EdgeInsets.all(8),
+            child: Image.asset(
+              'assets/backarrow.png',
+              height: 24,
+              width: 24,
+              fit: BoxFit.contain,
+            ),
+          ),
         ),
         title: const Text(
           'My Orders',
           style: TextStyle(color: Colors.black),
         ),
-        centerTitle: true,
+
         bottom: PreferredSize(
           preferredSize: Size.fromHeight(50),
           child: Container(

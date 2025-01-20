@@ -21,7 +21,9 @@ class _ProductViewmodelScreenState extends State<ProductViewmodelScreen> {
   final double _unitPrice = 0;
   late String productId;
   late String variantId;
-
+  late TextEditingController quantityController;
+  int quantity = 1;
+  String? errorMessage;
   double get totalPrice => _quantity * _unitPrice;
 
   @override
@@ -39,10 +41,14 @@ class _ProductViewmodelScreenState extends State<ProductViewmodelScreen> {
         curve: Curves.easeInOut,
       );
     });
-
+    quantityController = TextEditingController(text: '1');
     // Fetch product details after dependencies are initialized
    // _fetchProductDetails();
   }
+
+
+
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -88,7 +94,9 @@ class _ProductViewmodelScreenState extends State<ProductViewmodelScreen> {
   void dispose() {
     _pageController.dispose();
     _timer.cancel();
+    quantityController.dispose();
     super.dispose();
+
   }
 
   @override
@@ -267,24 +275,22 @@ class _ProductViewmodelScreenState extends State<ProductViewmodelScreen> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (context) {
-        double unitPrice = product.sellingPrice;
-        int quantity = 1;
-
         return StatefulBuilder(
           builder: (context, setState) {
+            double unitPrice = product.sellingPrice;
             double totalPrice = quantity * unitPrice;
 
             return Padding(
-              padding: MediaQuery.of(context).viewInsets,
+              padding: MediaQuery.of(context).viewInsets, // Adjust padding for insets
               child: SingleChildScrollView(
                 child: Container(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Header Section
+                      // Product Image, Title, Price, and Quantity Section in a Row
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -309,7 +315,6 @@ class _ProductViewmodelScreenState extends State<ProductViewmodelScreen> {
                           ),
                           const SizedBox(width: 10),
                           Expanded(
-                            flex: 2,
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -321,34 +326,26 @@ class _ProductViewmodelScreenState extends State<ProductViewmodelScreen> {
                                   ),
                                   overflow: TextOverflow.ellipsis,
                                 ),
-                                Text(
+                                const Text(
                                   '1 Piece(s)',
-                                  style: const TextStyle(
-                                      fontSize: 14, color: Colors.grey),
+                                  style: TextStyle(fontSize: 14, color: Colors.grey),
                                 ),
                                 Row(
                                   children: [
-                                    Flexible(
-                                      child: Text(
-                                        '₹${product.mrp}',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          decoration:
-                                          TextDecoration.lineThrough,
-                                          color: Colors.red,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
+                                    Text(
+                                      '₹${product.mrp}',
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        decoration: TextDecoration.lineThrough,
+                                        color: Colors.red,
                                       ),
                                     ),
                                     const SizedBox(width: 8),
-                                    Flexible(
-                                      child: Text(
-                                        '₹${product.sellingPrice}',
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
+                                    Text(
+                                      '₹${product.sellingPrice}',
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
                                       ),
                                     ),
                                   ],
@@ -356,27 +353,25 @@ class _ProductViewmodelScreenState extends State<ProductViewmodelScreen> {
                               ],
                             ),
                           ),
-                          const Spacer(),
-                          // Quantity controls
+                          // Quantity Controls
                           Container(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 16),
+                            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                             decoration: BoxDecoration(
                               color: Colors.green.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Row(
-                              mainAxisSize: MainAxisSize.min,
                               children: [
                                 InkWell(
                                   onTap: () {
                                     if (quantity > 1) {
                                       setState(() {
                                         quantity--;
+                                        quantityController.text = quantity.toString();
+                                        errorMessage = null; // Clear error
                                       });
                                     }
                                   },
-                                  borderRadius: BorderRadius.circular(8),
                                   child: Container(
                                     width: 25,
                                     height: 25,
@@ -385,29 +380,50 @@ class _ProductViewmodelScreenState extends State<ProductViewmodelScreen> {
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     alignment: Alignment.center,
-                                    child: const Icon(Icons.remove,
-                                        color: Colors.white, size: 18),
+                                    child: const Icon(Icons.remove, color: Colors.white),
                                   ),
                                 ),
-                                Padding(
-                                  padding:
-                                  const EdgeInsets.symmetric(horizontal: 6),
-                                  child: Text(
-                                    '$quantity',
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                      color: AppColors.primaryColor,
+                                SizedBox(
+                                  width: 40,
+                                  child: TextField(
+                                    controller: quantityController,
+                                    textAlign: TextAlign.center,
+                                    keyboardType: TextInputType.number,
+                                    decoration: InputDecoration(
+                                      isDense: true,
+                                      contentPadding: EdgeInsets.zero,
+                                      border: InputBorder.none,
+                                      errorText: errorMessage,
                                     ),
+                                    onChanged: (value) {
+                                      if (value.isEmpty) {
+                                        setState(() {
+                                          errorMessage = 'Quantity cannot be empty';
+                                        });
+                                        return;
+                                      }
+                                      final int? newQuantity = int.tryParse(value);
+                                      if (newQuantity == null || newQuantity <= 0) {
+                                        setState(() {
+                                          errorMessage = 'Enter a valid quantity';
+                                        });
+                                      } else {
+                                        setState(() {
+                                          errorMessage = null;
+                                          quantity = newQuantity;
+                                        });
+                                      }
+                                    },
                                   ),
                                 ),
                                 InkWell(
                                   onTap: () {
                                     setState(() {
                                       quantity++;
+                                      quantityController.text = quantity.toString();
+                                      errorMessage = null;
                                     });
                                   },
-                                  borderRadius: BorderRadius.circular(8),
                                   child: Container(
                                     width: 25,
                                     height: 25,
@@ -416,8 +432,7 @@ class _ProductViewmodelScreenState extends State<ProductViewmodelScreen> {
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     alignment: Alignment.center,
-                                    child: const Icon(Icons.add,
-                                        color: Colors.white, size: 18),
+                                    child: const Icon(Icons.add, color: Colors.white),
                                   ),
                                 ),
                               ],
@@ -425,11 +440,9 @@ class _ProductViewmodelScreenState extends State<ProductViewmodelScreen> {
                           ),
                         ],
                       ),
+                      const Divider(height: 20), // Divider after Quantity controls
 
-                      // Time Spent Section
-                      const Divider(height: 20),
-
-                      // Total and Add to Cart Button
+                      // Total and Add to Cart Button Section
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -438,13 +451,11 @@ class _ProductViewmodelScreenState extends State<ProductViewmodelScreen> {
                             children: [
                               const Text(
                                 'Total',
-                                style:
-                                TextStyle(fontSize: 14, color: Colors.grey),
+                                style: TextStyle(fontSize: 14, color: Colors.grey),
                               ),
                               Text(
                                 '₹$totalPrice',
-                                style: const TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
+                                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                             ],
                           ),
@@ -454,26 +465,19 @@ class _ProductViewmodelScreenState extends State<ProductViewmodelScreen> {
                                 onPressed: viewModel.isLoading
                                     ? null
                                     : () async {
-                                  final success = await viewModel
-                                      .addToCart(context, quantity);
+                                  final success = await viewModel.addToCart(context, quantity);
                                   if (success) {
-                                    Navigator.pushNamed(
-                                        context, AppRoutes.ShoppingCart);
-                                    // Dismiss the bottom sheet only on success
+                                    Navigator.pushNamed(context, AppRoutes.ShoppingCart);
                                   }
                                 },
                                 icon: viewModel.isLoading
-                                    ? const CircularProgressIndicator(
-                                    color: Colors.white)
-                                    : const Icon(Icons.shopping_cart,
-                                    size: 18, color: Colors.white),
+                                    ? const CircularProgressIndicator(color: Colors.white)
+                                    : const Icon(Icons.shopping_cart, size: 18, color: Colors.white),
                                 label: viewModel.isLoading
                                     ? const Text('')
-                                    : const Text('Add to cart',
-                                    style: TextStyle(color: Colors.white)),
+                                    : const Text('Add to cart', style: TextStyle(color: Colors.white)),
                                 style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 12, horizontal: 20),
+                                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
                                   backgroundColor: AppColors.primaryColor,
                                 ),
                               );
@@ -481,12 +485,12 @@ class _ProductViewmodelScreenState extends State<ProductViewmodelScreen> {
                           ),
                         ],
                       ),
-                      const SizedBox(height: 16),
                     ],
                   ),
                 ),
               ),
             );
+
           },
         );
       },

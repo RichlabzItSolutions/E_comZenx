@@ -97,241 +97,248 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
         ),
       )
           : Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: viewModel.items.length,
-              itemBuilder: (context, index) {
-                final item = viewModel.items[index];
-                return Container(
-                  margin: const EdgeInsets.symmetric(
-                      vertical: 8, horizontal: 8),
-                  decoration: BoxDecoration(
-                    color: Colors.white, // Set the background to white
-                    border: Border.all(
-                        color: Colors.grey.withOpacity(0.3),
-                        width: 1),
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.1),
-                        blurRadius: 4,
-                        spreadRadius: 2,
-                        offset: const Offset(0, 2), // Shadow direction
-                      ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Row(
-                      children: [
-                        // Image with 404 handling
-                        ClipRRect(
-                          borderRadius:
-                          BorderRadius.circular(8), // Rounded corners
-                          child: Image.network(
-                            item.mainImageUrl,
-                            width: 60,
-                            height: 60,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Container(
-                                width: 60,
-                                height: 60,
-                                color: Colors.grey[300],
-                                alignment: Alignment.center,
-                                child: const Icon(
-                                  Icons.image_not_supported,
-                                  size: 30,
-                                  color: Colors.grey,
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment:
-                            CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                item.productTitle,
-                                style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              const SizedBox(height: 4),
-                              Row(
-                                children: [
-                                  Text(
-                                    "₹${item.mrp}",
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      decoration:
-                                      TextDecoration.lineThrough,
-                                      color: Colors.grey,
-                                    ),
-                                  ),
-                                  const SizedBox(width: 8),
-                                  Text(
-                                    "₹${item.unitPrice}",
-                                    style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        Column(
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 8, horizontal: 16),
-                              decoration: BoxDecoration(
-                                color:
-                                Colors.green.withOpacity(0.1),
-                                borderRadius:
-                                BorderRadius.circular(12),
-                              ),
-                              child: Row(
-                                children: [
-                                  InkWell(
-                                    onTap: () {
-                                      viewModel
-                                          .decrementQuantity(index);
-                                    },
-                                    borderRadius:
-                                    BorderRadius.circular(8),
-                                    child: Container(
-                                      width: 30,
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.primaryColor,
-                                        borderRadius:
-                                        BorderRadius.circular(8),
-                                      ),
-                                      alignment: Alignment.center,
-                                      child: const Icon(Icons.remove,
-                                          color: Colors.white,
-                                          size: 15),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding:
-                                    const EdgeInsets.symmetric(
-                                        horizontal: 6),
-                                    child: Text(
-                                      '${item.quantity}',
-                                      style: const TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                        color:
-                                        AppColors.primaryColor,
-                                      ),
-                                    ),
-                                  ),
-                                  InkWell(
-                                    onTap: () {
-                                      viewModel
-                                          .incrementQuantity(index);
-                                    },
-                                    borderRadius:
-                                    BorderRadius.circular(8),
-                                    child: Container(
-                                      width: 30,
-                                      height: 30,
-                                      decoration: BoxDecoration(
-                                        color: AppColors.primaryColor,
-                                        borderRadius:
-                                        BorderRadius.circular(8),
-                                      ),
-                                      alignment: Alignment.center,
-                                      child: const Icon(Icons.add,
-                                          color: Colors.white,
-                                          size: 15),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            TextButton(
-                              onPressed: () =>
-                                  _showRemoveConfirmationDialog(
-                                      context, index, viewModel),
-                              style: TextButton.styleFrom(
-                                foregroundColor: Colors.red,
-                              ),
-                              child: const Text(
-                                'Remove',
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ],
+          children: [
+            Expanded(
+              child: ListView.builder(
+                itemCount: viewModel.items.length,
+                itemBuilder: (context, index) {
+                  final item = viewModel.items[index];
+                  return Container(
+                    margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: Colors.grey.withOpacity(0.3), width: 1),
+                      borderRadius: BorderRadius.circular(8),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 4,
+                          spreadRadius: 2,
+                          offset: const Offset(0, 2),
                         ),
                       ],
                     ),
-                  ),
-                );
-              },
-            ),
-          ),
-          DottedDivider(
-            dotSize: 1.0,
-            color: Colors.black,
-            spacing: 6.0,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              children: [
-                _buildSummaryRow(
-                    'No. of items:', viewModel.totalItems.toString()),
-                _buildSummaryRow(
-                    'Sub Total:', '₹${viewModel.subTotal}'),
-                _buildSummaryRow(
-                    'Delivery Charges:', '₹${viewModel.deliveryCharges}'),
-                DottedDivider(
-                  dotSize: 1.0,
-                  color: Colors.black,
-                  spacing: 6.0,
-                ),
-                _buildSummaryRow(
-                    'Total Payment:', '₹${viewModel.finalAmount}',
-                    isBold: true),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Column(
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    Navigator.pushReplacementNamed(
-                        context, AppRoutes.DeliveryAddress);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.primaryColor,
-                    minimumSize: const Size(double.infinity, 50),
-                  ),
-                  child: const Text('Place Order',
-                      style: TextStyle(
-                          fontSize: 18, color: Colors.white)),
-                ),
-                const SizedBox(height: 10),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Row(
+                        children: [
+                          // Image with error handling
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8),
+                            child: Image.network(
+                              item.mainImageUrl,
+                              width: 60,
+                              height: 60,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  width: 60,
+                                  height: 60,
+                                  color: Colors.grey[300],
+                                  alignment: Alignment.center,
+                                  child: const Icon(
+                                    Icons.image_not_supported,
+                                    size: 30,
+                                    color: Colors.grey,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  item.productTitle,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Row(
+                                  children: [
+                                    Text(
+                                      "₹${item.mrp}",
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        decoration: TextDecoration.lineThrough,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 8),
+                                    Text(
+                                      "₹${item.unitPrice}",
+                                      style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          // Quantity controls and remove button
+                          Column(
+                            children: [
+                              // Quantity input with TextField
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 8, horizontal: 16),
+                                decoration: BoxDecoration(
+                                  color: Colors.green.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Row(
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        // Decrement quantity but prevent going below 1
+                                        if (item.quantity > 1) {
+                                          viewModel.decrementQuantity(index);
+                                        }
+                                      },
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Container(
+                                        width: 30,
+                                        height: 30,
+                                        decoration: BoxDecoration(
+                                          color: AppColors.primaryColor,
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        alignment: Alignment.center,
+                                        child: const Icon(Icons.remove,
+                                            color: Colors.white, size: 15),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 6),
+                                      child: SizedBox(
+                                        width: 30,
+                                        height: 40,
+                                        child: Center( // Ensures vertical alignment
+                                          child: TextField(
+                                            controller: TextEditingController(text: '${item.quantity}'),
+                                            textAlign: TextAlign.center, // Center-align text horizontally
+                                            keyboardType: TextInputType.number,
+                                            decoration: const InputDecoration(
+                                              border: InputBorder.none,
+                                              contentPadding: EdgeInsets.zero, // No padding for perfect centering
+                                            ),
+                                            style: const TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.bold,
+                                              color: AppColors.primaryColor,
+                                            ),
+                                            onChanged: (value) {
+                                              // Validate input to allow only valid positive integers
+                                              int? newQuantity = int.tryParse(value);
+                                              if (newQuantity != null && newQuantity > 0) {
+                                                viewModel.updateQuantity(index, newQuantity);
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                      ),
 
-              ],
+                                    ),
+                                    InkWell(
+                                      onTap: () {
+                                        // Increment quantity
+                                        viewModel.incrementQuantity(index);
+                                      },
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: Container(
+                                        width: 30,
+                                        height: 30,
+                                        decoration: BoxDecoration(
+                                          color: AppColors.primaryColor,
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        alignment: Alignment.center,
+                                        child: const Icon(Icons.add,
+                                            color: Colors.white, size: 15),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              TextButton(
+                                onPressed: () => _showRemoveConfirmationDialog(
+                                    context, index, viewModel),
+                                style: TextButton.styleFrom(
+                                  foregroundColor: Colors.red,
+                                ),
+                                child: const Text(
+                                  'Remove',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+            DottedDivider(
+              dotSize: 1.0,
+              color: Colors.black,
+              spacing: 6.0,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                children: [
+                  _buildSummaryRow('No. of items:', viewModel.totalItems.toString()),
+                  _buildSummaryRow('Sub Total:', '₹${viewModel.subTotal}'),
+                  _buildSummaryRow('Delivery Charges:', '₹${viewModel.deliveryCharges}'),
+                  DottedDivider(
+                    dotSize: 1.0,
+                    color: Colors.black,
+                    spacing: 6.0,
+                  ),
+                  _buildSummaryRow('Total Payment:', '₹${viewModel.finalAmount}',
+                      isBold: true),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context,
+                        AppRoutes.DeliveryAddress,
+                        arguments: {'from': 1}, // Passing arguments as a map
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.primaryColor,
+                      minimumSize: const Size(double.infinity, 50),
+                    ),
+                    child: const Text('Place Order',
+                        style: TextStyle(fontSize: 18, color: Colors.white)),
+                  ),
+                  const SizedBox(height: 10),
+                ],
+              ),
+            ),
+          ],
+
+
       ),
     );
   }

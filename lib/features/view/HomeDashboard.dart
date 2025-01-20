@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:hygi_health/common/Utils/app_strings.dart';
 import 'package:hygi_health/features/view/widgets/banner_section_Screen.dart';
 import 'package:hygi_health/features/view/widgets/myaccount_screen.dart';
@@ -24,6 +25,7 @@ class _HomePageState extends State<HomePage> {
   final PageController _pageController = PageController();
   int _selectedIndex = 0; // Track selected bottom navigation tab
   bool isFetching = false; // Flag to track if request is in progress
+  DateTime? _lastPressedTime;
 
   @override
   void dispose() {
@@ -36,6 +38,7 @@ class _HomePageState extends State<HomePage> {
       _selectedIndex = index;
     });
   }
+
   Future<void> _handlePageRefresh() async {
     if (isFetching) return; // Prevent multiple requests
     setState(() {
@@ -44,7 +47,7 @@ class _HomePageState extends State<HomePage> {
 
     try {
       final categoryViewModel =
-          Provider.of<CategoryViewModel>(context, listen: false);
+      Provider.of<CategoryViewModel>(context, listen: false);
       final cartProvider = Provider.of<CartProvider>(context, listen: false);
       await Future.wait([
         categoryViewModel.fetchCategories(),
@@ -59,6 +62,7 @@ class _HomePageState extends State<HomePage> {
       });
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -109,9 +113,25 @@ class _HomePageState extends State<HomePage> {
         if (index != 0) {
           // Navigate to the Home page when back button is pressed
           setState(() {
-            _selectedIndex = 0; // Replace _currentIndex with your actual index variable
+            _selectedIndex =
+            0; // Replace _currentIndex with your actual index variable
           });
           return false; // Prevent default back navigation
+        }
+        else  if (index==0){
+
+          DateTime now = DateTime.now();
+          if (_lastPressedTime == null ||
+              now.difference(_lastPressedTime!) > Duration(seconds: 2)) {
+            // First press, store the current time
+            _lastPressedTime = now;
+            // Show alert to the user
+            _showExitConfirmationDialog(context);
+            return Future.value(false); // Prevent default back navigation
+          } else {
+            // Second press within 2 seconds, exit
+            return Future.value(true); // Allow default back navigation
+          }
         }
         return true; // Allow default back navigation when on the Home page
       },
@@ -126,7 +146,9 @@ class _HomePageState extends State<HomePage> {
             child: Text(
               "Other Page",
               style: TextStyle(
-                fontSize: MediaQuery.of(context).textScaleFactor * 20,
+                fontSize: MediaQuery
+                    .of(context)
+                    .textScaleFactor * 20,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -136,8 +158,34 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-}
+  void _showExitConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Exit"),
+          content: Text("Are you sure you want to exit the app?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+              },
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                SystemNavigator.pop(); // Close the app
+              },
+              child: Text("Confirm"),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
+}
 class HomeContent extends StatefulWidget {
   final Future<void> Function() onRefresh; // Pass refresh function
 

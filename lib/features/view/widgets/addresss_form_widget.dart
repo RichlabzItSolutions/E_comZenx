@@ -246,6 +246,7 @@ class _AddressFormWidgetState extends State<AddressFormWidget> {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.primaryColor,
+                    foregroundColor: Colors.white
                   ),
                   child: Text(widget.address == null
                       ? AppStrings.saveAddress

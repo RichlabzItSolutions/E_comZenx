@@ -192,4 +192,15 @@ class ShoppingCartViewModel extends ChangeNotifier {
       // Optionally, handle any errors that occur during the API call
     }
   }
+  Future<void> updateQuantity(int index, int newQuantity) async {
+    final item = items[index];
+    item.quantity = newQuantity;
+
+    await _updateCartItem(index);
+
+    // Fetch updated cart items
+    await fetchCartItems();
+    notifyListeners();
+  }
+
 }

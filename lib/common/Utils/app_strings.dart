@@ -51,7 +51,7 @@ class AppStrings {
 
 
   // home dashboard labels
-  static const String allCategories = "All Sub Categories";
+  static const String allCategories = "All Categories";
 
 
   static const String byfromAnyCategory = "Buy from any category";

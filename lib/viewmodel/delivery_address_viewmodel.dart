@@ -96,7 +96,7 @@ class DeliveryViewModel extends ChangeNotifier {
       if (response.success) {
         print("Order confirmed: ${response.data?.orderId}");
         // Navigate to SUCCESS page and pass the order details
-        Navigator.pushNamed(
+        Navigator.pushReplacementNamed(
           context,
           AppRoutes.SUCCESS, // Assuming this route is linked to OrderConfirmationPage
           arguments: {

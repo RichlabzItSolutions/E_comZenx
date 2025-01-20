@@ -27,8 +27,8 @@ class _OrderTabsViewState extends State<OrderTabsView>
     String selectedTab = _tabController.index == 0
         ? 'Active'
         : _tabController.index == 1
-            ? 'Delivered' // Ensure the correct tab name is passed for Completed
-            : 'Cancelled';
+        ? 'Delivered' // Ensure the correct tab name is passed for Completed
+        : 'Cancelled';
     orderViewModel
         .setTab(selectedTab); // This triggers the tab change and API call
   }
@@ -43,70 +43,69 @@ class _OrderTabsViewState extends State<OrderTabsView>
   @override
   Widget build(BuildContext context) {
     final orderViewModel = Provider.of<OrderViewModel>(context);
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppColors.backgroundColor,
-        // AppBar background
-        elevation: 1,
-        leading: GestureDetector(
-          onTap: () {
-            Navigator.pushReplacementNamed(
-                context, AppRoutes.HOME); // Navigate back
-          },
-          child: Container(
-            padding: EdgeInsets.all(8),
-            child: Image.asset(
-              'assets/backarrow.png',
-              height: 24,
-              width: 24,
-              fit: BoxFit.contain,
-            ),
-          ),
-        ),
-        title: const Text(
-          'My Orders',
-          style: TextStyle(color: Colors.black),
-        ),
 
-        bottom: PreferredSize(
-          preferredSize: Size.fromHeight(50),
-          child: Container(
-            color: Colors.white, // TabBar background color
-            child: TabBar(
-              controller: _tabController,
-              onTap: (index) {
-                // Manually call _onTabChanged when a tab is tapped
-                _onTabChanged();
-              },
-              labelColor: AppColors.primaryColor,
-              // Selected tab text color
-              unselectedLabelColor: Colors.grey,
-              // Unselected tab text color
-              indicatorColor: Color(0xFF1A73FC),
-              // Indicator color for the selected tab
-              indicatorWeight: 3,
-              // Thickness of the indicator
-              tabs: const [
-                Tab(text: 'Active'),
-                Tab(text: 'Completed'), // Tab name
-                Tab(text: 'Cancelled'),
-              ],
+    return WillPopScope(
+      onWillPop: () async {
+        // Navigate back to home when back button is pressed
+        Navigator.pushReplacementNamed(context, AppRoutes.HOME);
+        return false; // Prevent default back navigation
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: AppColors.backgroundColor,
+          elevation: 1,
+          leading: GestureDetector(
+            onTap: () {
+              Navigator.pushReplacementNamed(
+                  context, AppRoutes.HOME); // Navigate back
+            },
+            child: Container(
+              padding: const EdgeInsets.all(8),
+              child: Image.asset(
+                'assets/backarrow.png',
+                height: 24,
+                width: 24,
+                fit: BoxFit.contain,
+              ),
+            ),
+          ),
+          title: const Text(
+            'My Orders',
+            style: TextStyle(color: Colors.black),
+          ),
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(50),
+            child: Container(
+              color: Colors.white, // TabBar background color
+              child: TabBar(
+                controller: _tabController,
+                onTap: (index) {
+                  // Manually call _onTabChanged when a tab is tapped
+                  _onTabChanged();
+                },
+                labelColor: AppColors.primaryColor,
+                unselectedLabelColor: Colors.grey,
+                indicatorColor: const Color(0xFF1A73FC),
+                indicatorWeight: 3,
+                tabs: const [
+                  Tab(text: 'Active'),
+                  Tab(text: 'Completed'), // Tab name
+                  Tab(text: 'Cancelled'),
+                ],
+              ),
             ),
           ),
         ),
-      ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          OrderListView(orderViewModel: orderViewModel, orderStatus: 'Active'),
-          // Show active orders
-          OrderListView(
-              orderViewModel: orderViewModel, orderStatus: 'Delivered'),
-          // Show completed (Delivered) orders
-          OrderListView(
-              orderViewModel: orderViewModel, orderStatus: 'Cancelled'),
-          // Show cancelled orders
-        ],
+        body: TabBarView(
+          controller: _tabController,
+          children: [
+            OrderListView(orderViewModel: orderViewModel, orderStatus: 'Active'),
+            OrderListView(
+                orderViewModel: orderViewModel, orderStatus: 'Delivered'),
+            OrderListView(
+                orderViewModel: orderViewModel, orderStatus: 'Cancelled'),
+          ],
+        ),
       ),
     );
   }

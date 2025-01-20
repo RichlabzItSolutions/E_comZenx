@@ -38,8 +38,9 @@ class _BaseScreenState extends State<BaseScreen> {
         elevation: 1,
         leading: GestureDetector(
           onTap: () {
-            Navigator.pushReplacementNamed(
-                context, AppRoutes.HOME); // Handles back navigation
+            Navigator.pop(context);
+            // Navigator.pushReplacementNamed(
+            //     context, AppRoutes.HOME); // Handles back navigation
           },
           child: Container(
             padding: EdgeInsets.all(8),

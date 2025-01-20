@@ -224,6 +224,20 @@ class ApiService {
 //Fetch products for a specific category from the API
   Future<List<Product>> fetchProducts(ProductFilterRequest payload) async {
     try {
+      // Retrieve the SharedPreferences instance
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      // Retrieve the user ID from SharedPreferences and convert to an integer
+      final String? userIdString = prefs.getString('userId');
+      final int? userId = userIdString != null ? int.tryParse(userIdString) : null;
+
+      // Check if userId is null after conversion
+      if (userId == null) {
+        throw Exception('User ID is not available or invalid in SharedPreferences');
+      }
+
+      // Add the user ID to the payload
+
       // Define your API endpoint
       final String apiUrl = '${AppConstants
           .baseUrl}fetchProducts'; // Replace with your actual API endpoint
@@ -240,6 +254,7 @@ class ApiService {
         "uomOrSize": payload.uomOrSize,
         "colour": payload.colour,
         "priceSort": payload.priceSort,
+        "userId": userId, // Add the user ID to the payload
       };
 
       // Configure Dio to use the correct endpoint and handle the request
@@ -666,7 +681,7 @@ class ApiService {
     );
 
     if (response.statusCode == 200) {
-      // If the server returns a successful response, parse the JSON
+      // If the server returns a successful resporesponse.data = {_Map} size = 3nse, parse the JSON
       OrdersResponse ordersResponse = OrdersResponse.fromJson(response.data);
       return ordersResponse.orders; // Return the list of orders
     } else {

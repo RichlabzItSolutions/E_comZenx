@@ -1,6 +1,5 @@
 
 import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:hygi_health/data/model/confirmorder.dart';
 import 'package:hygi_health/data/model/order_model.dart';
@@ -297,11 +296,21 @@ class ApiService {
     try {
       // Define the endpoint for the POST request
       final String apiUrl = '${AppConstants.baseUrl}fetchProduct';
+      SharedPreferences prefs = await SharedPreferences.getInstance();
 
+      // Retrieve the user ID from SharedPreferences and convert to an integer
+      final String? userIdString = prefs.getString('userId');
+      final int? userId = userIdString != null ? int.tryParse(userIdString) : null;
+
+      // Check if userId is null after conversion
+      if (userId == null) {
+        throw Exception('User ID is not available or invalid in SharedPreferences');
+      }
       // Define the body with productId and variantId
       final body = {
         'productId': productId,
         'variantId': variantId,
+        'userId': userId, // Retrieve the user ID from SharedPreferences and use it in the request
       };
 
       // Configure Dio to use the correct endpoint and handle the request
@@ -824,9 +833,60 @@ class ApiService {
     }
   }
 
+// Method to fetch the user profile
+  Future<Map<String, dynamic>> fetchUserProfile() async {
 
+    String url = '${AppConstants
+        .baseUrl}fetchProfile'; // Use the correct endpoint
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // Retrieve the user ID from SharedPreferences and convert to an integer
+    final String? userIdString = prefs.getString('userId');
+    final int? userId = userIdString != null ? int.tryParse(userIdString) : null;
+
+    // Check if userId is null after conversion
+    if (userId == null) {
+      throw Exception('User ID is not available or invalid in SharedPreferences');
+    }
+    try {
+      final response = await _dio.post(url,
+        data: json.encode({
+          'userId': userId,
+        }),
+      );
+      if (response.statusCode == 200) {
+        final data = (response.data);
+        return data;
+      } else {
+        throw Exception("Failed to load profile: ${response.statusCode}");
+      }
+    } catch (error) {
+      throw Exception("Error fetching profile: $error");
+    }
+  }
+  // Update User Profile
+  Future<Map<String, dynamic>> updateUserProfile(Map<String, dynamic> userData) async {
+    String url = '${AppConstants.baseUrl}updateProfile'; // Use the correct endpoint
+
+    try {
+      final response = await _dio.post(
+        url,
+        data: json.encode(userData),
+      );
+
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        throw Exception("Failed to update profile: ${response.data}");
+      }
+    } catch (error) {
+      throw Exception("Error updating profile: $error");
+    }
+  }
 
 }
+
+
 
 
 

@@ -9,7 +9,7 @@ import '../../viewmodel/product_view_model.dart';
 class ProductItem extends StatefulWidget {
   final Product product;
   final bool isLoading;
-
+  int quantity = 1;
   ProductItem({required this.product, this.isLoading = false});
   @override
   _ProductItemState createState() => _ProductItemState();
@@ -17,13 +17,14 @@ class ProductItem extends StatefulWidget {
 
 class _ProductItemState extends State<ProductItem> {
   late TextEditingController quantityController;
-  int quantity = 1;
+
   String? errorMessage;
 
   @override
   void initState() {
     super.initState();
-    quantityController = TextEditingController(text: '1');
+    quantityController =
+        TextEditingController(text: widget.quantity.toString());
   }
 
   @override
@@ -34,7 +35,8 @@ class _ProductItemState extends State<ProductItem> {
 
   @override
   Widget build(BuildContext context) {
-    final variant = widget.product.variants.isNotEmpty ? widget.product.variants[0] : null;
+    final variant = widget.product.variants.isNotEmpty ? widget.product
+        .variants[0] : null;
     final imageUrl = variant != null && variant.images.isNotEmpty
         ? variant.images[0].url
         : null;
@@ -138,7 +140,7 @@ class _ProductItemState extends State<ProductItem> {
                 ),
                 const SizedBox(height: 10),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     ElevatedButton(
@@ -149,22 +151,34 @@ class _ProductItemState extends State<ProductItem> {
                         );
 
                         if (variant != null) {
-                          viewModel.fetchProductDetails(
-                            widget.product.productId.toString(),
-                            variant.variantId.toString(),
-                          );
-                          _showProductDetailsBottomSheet(
-                            context,
-                            variant,
-                            imageUrl!,
-                            widget.product,
-                          );
+                          if (variant.addedToCart == 0) {
+                            viewModel.fetchProductDetails(
+                              widget.product.productId.toString(),
+                              variant.variantId.toString(),
+                            );
+                            _showProductDetailsBottomSheet(
+                              context,
+                              variant,
+                              imageUrl!,
+                              widget.product,
+                            );
+                          } else {
+                            _showProductDetailsBottomSheet(
+                              context,
+                              variant,
+                              imageUrl!,
+                              widget.product,
+                            );
+                          }
                         } else {
-                          print("Variant or Image URL is null. Cannot proceed.");
+                          print(
+                              "Variant or Image URL is null. Cannot proceed.");
                         }
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFF6F6F6),
+                        backgroundColor: variant?.addedToCart == 0
+                            ? AppColors.backgroundColor
+                            : AppColors.primaryColor,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
@@ -173,10 +187,19 @@ class _ProductItemState extends State<ProductItem> {
                           horizontal: 16,
                         ),
                       ),
-                      child: const Text(
+                      child: variant?.addedToCart == 0
+                          ? const Text(
                         "Add to Cart",
                         style: TextStyle(
                           color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                      )
+                          : Text(
+                        "Added (${variant?.qty})",
+                        style: const TextStyle(
+                          color: Colors.white,
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
                         ),
@@ -192,12 +215,12 @@ class _ProductItemState extends State<ProductItem> {
     );
   }
 
-  void _showProductDetailsBottomSheet(
-      BuildContext context,
+  void _showProductDetailsBottomSheet(BuildContext context,
       Variant variant,
       String imageUrl,
-      Product product,
-      ) {
+      Product product,) {
+    int initialQuantity = variant.qty ?? 1; // Default to 1 if qty is null
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -208,16 +231,17 @@ class _ProductItemState extends State<ProductItem> {
         return StatefulBuilder(
           builder: (context, setState) {
             double unitPrice = variant.sellingPrice;
-            double totalPrice = quantity * unitPrice;
+            double totalPrice = initialQuantity * unitPrice;
 
             return Padding(
-              padding: MediaQuery.of(context).viewInsets,
+              padding: MediaQuery
+                  .of(context)
+                  .viewInsets,
               child: SingleChildScrollView(
                 child: Container(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     children: [
-                      // Product Image, Title, Price, and Quantity Section in a Row
                       Row(
                         children: [
                           ClipRRect(
@@ -251,7 +275,8 @@ class _ProductItemState extends State<ProductItem> {
                                 ),
                                 Text(
                                   '1 Piece(s)',
-                                  style: const TextStyle(fontSize: 14, color: Colors.grey),
+                                  style: const TextStyle(
+                                      fontSize: 14, color: Colors.grey),
                                 ),
                                 Row(
                                   children: [
@@ -276,10 +301,30 @@ class _ProductItemState extends State<ProductItem> {
                               ],
                             ),
                           ),
-
-                          // Quantity controls in the same row as image and title
+                        ],
+                      ),
+                      const Divider(height: 20),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Total',
+                                style: TextStyle(
+                                    fontSize: 14, color: Colors.grey),
+                              ),
+                              Text(
+                                '₹$totalPrice',
+                                style: const TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
                           Container(
-                            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 16),
                             decoration: BoxDecoration(
                               color: Colors.green.withOpacity(0.1),
                               borderRadius: BorderRadius.circular(12),
@@ -288,11 +333,11 @@ class _ProductItemState extends State<ProductItem> {
                               children: [
                                 InkWell(
                                   onTap: () {
-                                    if (quantity > 1) {
+                                    if (initialQuantity > 1) {
                                       setState(() {
-                                        quantity--;
-                                        quantityController.text = quantity.toString();
-                                        errorMessage = null; // Clear error
+                                        initialQuantity--;
+                                        totalPrice =
+                                            initialQuantity * unitPrice;
                                       });
                                     }
                                   },
@@ -304,49 +349,25 @@ class _ProductItemState extends State<ProductItem> {
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     alignment: Alignment.center,
-                                    child: const Icon(Icons.remove, color: Colors.white),
+                                    child: const Icon(Icons.remove,
+                                        color: Colors.white),
                                   ),
                                 ),
-                                SizedBox(
-                                  width: 50,
-                                  child: TextField(
-                                    controller: quantityController,
-                                    textAlign: TextAlign.center,
-                                    keyboardType: TextInputType.number,
-                                    decoration: InputDecoration(
-                                      isDense: true,
-                                      contentPadding: EdgeInsets.zero,
-                                      border: InputBorder.none,
-                                      errorText: errorMessage,
-                                    ),
-                                    onChanged: (value) {
-                                      if (value.isEmpty) {
-                                        setState(() {
-                                          errorMessage = 'Quantity cannot be empty';
-                                        });
-                                        return;
-                                      }
-
-                                      final int? newQuantity = int.tryParse(value);
-                                      if (newQuantity == null || newQuantity <= 0) {
-                                        setState(() {
-                                          errorMessage = 'Enter a valid quantity';
-                                        });
-                                      } else {
-                                        setState(() {
-                                          errorMessage = null;
-                                          quantity = newQuantity;
-                                        });
-                                      }
-                                    },
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8),
+                                  child: Text(
+                                    initialQuantity.toString(),
+                                    style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ),
                                 InkWell(
                                   onTap: () {
                                     setState(() {
-                                      quantity++;
-                                      quantityController.text = quantity.toString();
-                                      errorMessage = null;
+                                      initialQuantity++;
+                                      totalPrice = initialQuantity * unitPrice;
                                     });
                                   },
                                   child: Container(
@@ -357,7 +378,8 @@ class _ProductItemState extends State<ProductItem> {
                                       borderRadius: BorderRadius.circular(8),
                                     ),
                                     alignment: Alignment.center,
-                                    child: const Icon(Icons.add, color: Colors.white),
+                                    child: const Icon(Icons.add,
+                                        color: Colors.white),
                                   ),
                                 ),
                               ],
@@ -365,52 +387,35 @@ class _ProductItemState extends State<ProductItem> {
                           ),
                         ],
                       ),
-                      const Divider(height: 20), // Divider after Quantity controls
-
-                      // Total and Add to Cart Button Section
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Total',
-                                style: TextStyle(fontSize: 14, color: Colors.grey),
+                      const SizedBox(height: 20),
+                      ElevatedButton.icon(
+                        onPressed: () async {
+                          if (initialQuantity == 0) {
+                            // Show an error message if quantity is 0
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: const Text('Please select a valid quantity.'),
+                                backgroundColor: Colors.red,
                               ),
-                              Text(
-                                '₹$totalPrice',
-                                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                              ),
-                            ],
-                          ),
-                          Consumer<ProductViewModel>(
-                            builder: (context, viewModel, child) {
-                              return ElevatedButton.icon(
-                                onPressed: viewModel.isLoading
-                                    ? null
-                                    : () async {
-                                  final success =
-                                  await viewModel.addToCart(context, quantity);
-                                  if (success) {
-                                    Navigator.pop(context); // Dismiss the bottom sheet
-                                  }
-                                },
-                                icon: viewModel.isLoading
-                                    ? const CircularProgressIndicator(color: Colors.white)
-                                    : const Icon(Icons.shopping_cart, size: 18, color: Colors.white),
-                                label: viewModel.isLoading
-                                    ? const Text('')
-                                    : const Text('Add to cart', style: TextStyle(color: Colors.white)),
-                                style: ElevatedButton.styleFrom(
-                                  padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                                  backgroundColor: AppColors.primaryColor,
-                                ),
-                              );
-                            },
-                          ),
-                        ],
+                            );
+                          } else {
+                            final success = await Provider.of<ProductViewModel>(
+                              context,
+                              listen: false,
+                            ).addToCart(context, initialQuantity);
+                            if (success) {
+                              Navigator.pop(context); // Close bottom sheet
+                            }
+                          }
+                        },
+                        icon: const Icon(Icons.shopping_cart, size: 18, color: Colors.white),
+                        label: const Text('Add to cart', style: TextStyle(color: Colors.white)),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                          backgroundColor: AppColors.primaryColor,
+                        ),
                       ),
+
                     ],
                   ),
                 ),
@@ -421,6 +426,4 @@ class _ProductItemState extends State<ProductItem> {
       },
     );
   }
-
-
 }

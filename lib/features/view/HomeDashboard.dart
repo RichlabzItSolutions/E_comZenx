@@ -201,8 +201,6 @@ class _HomeContentState extends State<HomeContent> {
   @override
   Widget build(BuildContext context) {
     final categoryViewModel = Provider.of<CategoryViewModel>(context);
-    final cartProvider = Provider.of<CartProvider>(context);
-
     return RefreshIndicator(
       onRefresh: widget.onRefresh, // Use parent function for refresh
       child: SingleChildScrollView(

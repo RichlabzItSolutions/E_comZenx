@@ -3,7 +3,11 @@ class ProductResponse {
   final String message;
   final List<Product> products;
 
-  ProductResponse({required this.success, required this.message, required this.products});
+  ProductResponse({
+    required this.success,
+    required this.message,
+    required this.products,
+  });
 
   factory ProductResponse.fromJson(Map<String, dynamic> json) {
     return ProductResponse(
@@ -29,7 +33,6 @@ class Product {
     required this.variants,
   });
 
-  // Factory method for creating a Product instance from JSON
   factory Product.fromJson(Map<String, dynamic> json) {
     return Product(
       productId: json['productId'] as int,
@@ -42,7 +45,6 @@ class Product {
     );
   }
 
-  // Convert a Product instance to JSON
   Map<String, dynamic> toJson() {
     return {
       'productId': productId,
@@ -53,7 +55,6 @@ class Product {
     };
   }
 }
-
 
 class Variant {
   final int variantId;
@@ -69,6 +70,10 @@ class Variant {
   final int status;
   final List<ImageModel> images;
 
+  // New fields
+  final int addedToCart;  // Quantity added to cart (nullable)
+  final int qty;          // Quantity (nullable)
+
   Variant({
     required this.variantId,
     required this.colorName,
@@ -82,9 +87,10 @@ class Variant {
     required this.minSellingPrice,
     required this.status,
     required this.images,
+    this.addedToCart = 0, // Default to 0 if not provided
+    this.qty = 0,         // Default to 0 if not provided
   });
 
-  // Factory method for creating a Variant instance from JSON
   factory Variant.fromJson(Map<String, dynamic> json) {
     return Variant(
       variantId: json['variantId'] as int,
@@ -98,14 +104,12 @@ class Variant {
       sellingPrice: (json['sellingPrice'] as num?)?.toDouble() ?? 0.0, // Convert to double if needed
       minSellingPrice: (json['minSellingPrice'] as num?)?.toDouble() ?? 0.0, // Convert to double if needed
       status: json['status'] as int? ?? 0, // Default to 0 if null
-      images: (json['images'] as List?) // Handle null or empty list
-          ?.map((image) => ImageModel.fromJson(image))
-          .toList() ??
-          [], // Default to empty list if null
+      images: (json['images'] as List?)?.map((image) => ImageModel.fromJson(image)).toList() ?? [],
+      addedToCart: json['addedToCart'] as int? ?? 0, // Handle addedToCart field (nullable)
+      qty: json['qty'] as int? ?? 0, // Handle qty field (nullable)
     );
   }
 
-  // Convert a Variant instance to JSON
   Map<String, dynamic> toJson() {
     return {
       'variantId': variantId,
@@ -119,11 +123,12 @@ class Variant {
       'sellingPrice': sellingPrice,
       'minSellingPrice': minSellingPrice,
       'status': status,
+      'addedToCart': addedToCart, // Include addedToCart in toJson
+      'qty': qty,                 // Include qty in toJson
       'images': images.map((image) => image.toJson()).toList(),
     };
   }
 }
-
 
 class ImageModel {
   final String url;
@@ -134,7 +139,6 @@ class ImageModel {
     required this.isMainImage,
   });
 
-  // Factory method for creating an ImageModel instance from JSON
   factory ImageModel.fromJson(Map<String, dynamic> json) {
     return ImageModel(
       url: json['url'] as String,
@@ -142,7 +146,6 @@ class ImageModel {
     );
   }
 
-  // Convert an ImageModel instance to JSON
   Map<String, dynamic> toJson() {
     return {
       'url': url,
@@ -176,7 +179,6 @@ class ProductFilterRequest {
     this.priceSort = "",
   });
 
-  // Factory method for creating an instance from JSON
   factory ProductFilterRequest.fromJson(Map<String, dynamic> json) {
     return ProductFilterRequest(
       categoryId: json['categoryId'] as String,
@@ -192,7 +194,6 @@ class ProductFilterRequest {
     );
   }
 
-  // Convert an instance to a JSON map
   Map<String, dynamic> toJson() {
     return {
       'categoryId': categoryId,
@@ -208,4 +209,3 @@ class ProductFilterRequest {
     };
   }
 }
-

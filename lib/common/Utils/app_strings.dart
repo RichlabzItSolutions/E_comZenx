@@ -54,7 +54,7 @@ class AppStrings {
   static const String allCategories = "All Categories";
 
 
-  static const String byfromAnyCategory = "Buy from any category";
+  static const String byfromAnyCategory = "   Buy from any category";
   static const String recentlyViewedProducts = "Recently Viewed Products";
   static const String viewAll = "View All";
   static const String searchProduct = "Search by product name";

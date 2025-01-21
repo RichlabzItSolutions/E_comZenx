@@ -117,8 +117,8 @@ class _ProductViewmodelScreenState extends State<ProductViewmodelScreen> {
 
       return BaseScreen(
         title: product.productTitle,
-        showCartIcon: false,
-        showShareIcon: true,
+        showCartIcon: true,
+        showShareIcon: false,
         child: CustomScrollView(
           slivers: [
             SliverAppBar(
@@ -245,17 +245,28 @@ class _ProductViewmodelScreenState extends State<ProductViewmodelScreen> {
                           _showProductDetailsBottomSheet(context, product);
                         },
                         icon: const Icon(Icons.shopping_cart, size: 18, color: Colors.white),
-                        label: const Text('Add to cart', style: TextStyle(color: Colors.white, fontSize: 20)),
+                        label: product?.addedToCart == 0
+                            ? const Text(
+                          'Add to cart',
+                          style: TextStyle(color: Colors.white, fontSize: 20),
+                        )
+                            : Text(
+                          'Added (${product?.qty})',
+                          style: const TextStyle(color: Colors.white, fontSize: 20),
+                        ),
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size(double.infinity, 50),
                           padding: EdgeInsets.zero,
                           shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.zero,
                           ),
-                          backgroundColor: AppColors.primaryColor,
+                          backgroundColor: product?.addedToCart == 0
+                              ? AppColors.primaryColor
+                              : AppColors.textColor, // Change background based on addedToCart state
                         ),
                       ),
-                    ),
+                    )
+
                   ],
                 ),
               ),
@@ -480,6 +491,7 @@ class _ProductViewmodelScreenState extends State<ProductViewmodelScreen> {
                                   padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
                                   backgroundColor: AppColors.primaryColor,
                                 ),
+
                               );
                             },
                           ),

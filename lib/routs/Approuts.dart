@@ -10,6 +10,7 @@ import '../features/view/category_view.dart';
 import '../features/view/product_viewmodel_screen.dart';
 import '../features/view/sub_category_list_page.dart';
 import '../features/view/viewAllScreen.dart';
+import '../features/view/widgets/edit_profile_screen.dart';
 import '../features/view/widgets/order_confirmation_page.dart';
 import '../features/view/widgets/delivery_address_screen.dart';
 import '../features/view/widgets/myaccount_screen.dart';
@@ -37,6 +38,7 @@ class AppRoutes {
   static const String SUCCESS = '/OrderConfirmationPage';
   static const String ORDER_DETAILS = '/OrderSummaryScreen';
   static const String GLOBAL_SEARCH = '/GlobalProductList';
+  static const String  PROFILE = '/EditProfileScreen';
 
   // Add more routes as needed
 
@@ -111,6 +113,7 @@ class AppRoutes {
       },
       AppRoutes.ORDER_DETAILS: (context) => OrderSummaryScreen(),
       AppRoutes.GLOBAL_SEARCH: (context) => GlobalProductList(),
+      AppRoutes.PROFILE: (context) => EditProfileScreen(), // Add EditProfileScreen here if needed
 
       // Define other routes here
     };

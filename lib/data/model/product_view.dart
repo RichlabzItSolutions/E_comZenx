@@ -26,6 +26,8 @@ class ProductView {
   final double minSellingPrice;
   final int status;
   final List<ImageData> images;
+  final int addedToCart; // New property
+  final int qty; // New property
 
   ProductView({
     required this.productId,
@@ -55,12 +57,13 @@ class ProductView {
     required this.minSellingPrice,
     required this.status,
     required this.images,
+    required this.addedToCart, // Add to constructor
+    required this.qty, // Add to constructor
   });
 
   factory ProductView.fromJson(Map<String, dynamic> json) {
     var list = json['images'] as List?;
-    List<ImageData> imagesList =
-        list?.map((i) => ImageData.fromJson(i)).toList() ?? [];
+    List<ImageData> imagesList = list?.map((i) => ImageData.fromJson(i)).toList() ?? [];
 
     return ProductView(
       productId: json['productId'] ?? 0,
@@ -90,6 +93,8 @@ class ProductView {
       minSellingPrice: (json['minSellingPrice'] ?? 0).toDouble(),
       status: json['status'] ?? 0,
       images: imagesList,
+      addedToCart: json['addedToCart'] ?? 0, // Parse addedToCart
+      qty: json['qty'] ?? 0, // Parse qty
     );
   }
 }

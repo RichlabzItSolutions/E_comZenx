@@ -6,7 +6,7 @@ import '../data/model/user_profile_model.dart';
 
 class ProfileViewModel extends ChangeNotifier {
   bool _isLoading = false;
-  UserProfile _userProfile = UserProfile(name: '', mobile: '', gender: 0);
+  UserProfile _userProfile = UserProfile(name: '', mobile: '', gender: 1);
 
   // Getters
   bool get isLoading => _isLoading;
@@ -51,8 +51,9 @@ class ProfileViewModel extends ChangeNotifier {
     UpdateProfile updateProfile = UpdateProfile(
       userId: userId,
       name: userProfile!.name ?? '',  // Provide a default value if name is null
-      gender: userProfile!.gender??0
+      gender: (userProfile!.gender ?? 1) == 0 ? 1 : (userProfile!.gender ?? 1),  // Ensure gender is not null and set default to 1 if null
     );
+
 
     try {
       // Call the updateUserProfile service with the correct data (from the UpdateProfile instance)

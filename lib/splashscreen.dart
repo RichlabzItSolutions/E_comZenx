@@ -46,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
               'assets/splash.png', // Path to the image in the assets folder
               width: MediaQuery.of(context).size.width, // Full device width
               height: MediaQuery.of(context).size.height * 0.6, // 60% of device height
-              fit: BoxFit.cover, // Scale image to fill both dimensions while preserving aspect ratio
+              fit: BoxFit.contain, // Scale image to fill both dimensions while preserving aspect ratio
             ),
           ],
         ),

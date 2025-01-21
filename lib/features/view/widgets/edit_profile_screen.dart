@@ -98,7 +98,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   _buildDropdown(
                     label: 'Gender',
                     value: _genderToString(viewModel.userProfile?.gender ?? 1),
-                    items: ['Male', 'Female', 'Other'],
+                    items: ['Male', 'Female'],
                     onChanged: (newValue) =>
                         viewModel.updateGender(_stringToGender(newValue)),
                   ),
@@ -202,8 +202,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         return 'Male';
       case 2:
         return 'Female';
-      case 3:
-        return 'Other';
       default:
         return 'Male'; // Default to Male if no valid gender
     }
@@ -216,8 +214,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         return 1;
       case 'Female':
         return 2;
-      case 'Other':
-        return 3;
       default:
         return 1; // Default to Male if no valid gender
     }

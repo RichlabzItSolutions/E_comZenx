@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:hygi_health/common/globally.dart';
 import 'package:hygi_health/data/model/removecartItemrequest.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../data/model/CartResponse.dart'; // Import the CartResponse model
+import '../data/model/CartResponse.dart';
+import '../data/model/minamountresponse.dart'; // Import the CartResponse model
 
 class ShoppingCartViewModel extends ChangeNotifier {
   // Instance of ApiService
@@ -15,7 +17,8 @@ class ShoppingCartViewModel extends ChangeNotifier {
   double deliveryCharges = 0.0;
   double discount = 0.0;
   double gstRate = 0.0; // GST rate (can be dynamically fetched)
-  double finalAmount = 0.0; // Final amount including GST
+  double finalAmount = 0.0;
+  double minAmount =0;
 
   // Get the list of cart items
   List<CartItem> get items => _items;
@@ -26,6 +29,7 @@ class ShoppingCartViewModel extends ChangeNotifier {
   // Calculate the subtotal (sum of the totalAmount of all items)
   double get subTotal =>
       _items.fold(0.0, (sum, item) => sum + item.totalAmount);
+
 
   // Fetch cart items and dynamic values like GST, deliveryCharges, and discount
   Future<void> fetchCartItems() async {
@@ -56,10 +60,8 @@ class ShoppingCartViewModel extends ChangeNotifier {
         // Dynamically update delivery charges, discount, gstRate, and finalAmount based on the response
         deliveryCharges = cartResponse.data.totalDeliveryCharges;
         discount = cartResponse.data.discount;
-        gstRate =
-            cartResponse.data.gst; // Assuming the response includes gstRate
-        finalAmount = cartResponse
-            .data.finalAmount; // Assuming the response includes finalAmount
+        gstRate = cartResponse.data.gst; // Assuming the response includes gstRate
+        finalAmount = cartResponse.data.finalAmount; // Assuming the response includes finalAmount
       } else {
         // Handle failure case (e.g., display a message)
         _items = [];
@@ -149,6 +151,7 @@ class ShoppingCartViewModel extends ChangeNotifier {
       final response = await authService.removeFromCart(removeCartItemRequest);
       // If the item is removed successfully from the server, remove it locally
       _items.removeAt(index);
+      fetchCartItems();
       notifyListeners();
     } catch (e) {
       print('Error removing item from cart: $e');
@@ -202,5 +205,39 @@ class ShoppingCartViewModel extends ChangeNotifier {
     await fetchCartItems();
     notifyListeners();
   }
+
+
+  // Fetch min amount from API
+
+  Future<void> fetchMinAmount() async {
+    _isLoading = true;
+    notifyListeners();
+
+    try {
+      final MinAmountResponse response = await authService.getMinAmount();
+
+      // Log the response to check if minAmount is present
+      print('API Response: ${response.data.minAmount}');
+
+      // Check if minAmount exists and is not null
+      if (response.data.minAmount != null) {
+        minAmount = response.data.minAmount.minAmount ;
+      } else {
+        print('minAmount is null');
+        minAmount = 0; // Set to a default value if not provided by the API
+      }
+
+    } catch (e) {
+      print('Error fetching minAmount: $e');
+      minAmount = 0; // Set to 0 in case of an error
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
+
+
+
+
 
 }

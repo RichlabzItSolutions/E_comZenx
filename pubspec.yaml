@@ -42,7 +42,8 @@ dependencies:
 
 #  image_picker: ^0.8.7+5
   shared_preferences: ^2.0.11
-
+  url_launcher: ^6.0.9
+  permission_handler: ^10.2.0
 # Dev dependencies
 dev_dependencies:
   flutter_test:
@@ -71,7 +72,6 @@ flutter:
 
   assets:
     - assets/splash.png
-    - assets/test.jpg
     - assets/banner.png
     - assets/mobile.png
     - assets/logo.png

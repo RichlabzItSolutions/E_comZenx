@@ -5,8 +5,20 @@ import '../../viewmodel/login_view_model.dart';
 import 'package:hygi_health/common/Utils/app_colors.dart';
 import 'package:hygi_health/common/Utils/app_strings.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  @override
+  _LoginScreenState createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _phoneController = TextEditingController();
+
+  @override
+  void dispose() {
+    // Dispose of the controller to release resources
+    _phoneController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +52,7 @@ class LoginScreen extends StatelessWidget {
                       child: Padding(
                         padding: EdgeInsets.symmetric(
                           horizontal:
-                              width * 0.05, // 5% of screen width for padding
+                          width * 0.05, // 5% of screen width for padding
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,7 +69,7 @@ class LoginScreen extends StatelessWidget {
                               ),
                             ),
                             SizedBox(height: height * 0.01),
-                            // 1% of screen height
+                            // Login Subtitle
                             Text(
                               AppStrings.pleasenetermobile,
                               style: TextStyle(
@@ -66,7 +78,6 @@ class LoginScreen extends StatelessWidget {
                               ),
                             ),
                             SizedBox(height: height * 0.03),
-                            // 3% of screen height
                             // Mobile Input Field
                             TextField(
                               controller: _phoneController,
@@ -78,16 +89,13 @@ class LoginScreen extends StatelessWidget {
                                   child: Image.asset(
                                     'assets/mobile.png',
                                     width: width * 0.05,
-                                    // Icon size proportional to width
                                     height: width * 0.05,
                                   ),
                                 ),
                                 hintText: AppStrings.enterMobileNumber,
                                 hintStyle: TextStyle(
                                   fontSize: width * 0.035,
-                                  // Smaller font size for the hint text
-                                  color: Colors
-                                      .grey, // Optional: Adjust hint text color
+                                  color: Colors.grey,
                                 ),
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(8),
@@ -114,7 +122,6 @@ class LoginScreen extends StatelessWidget {
                                 fillColor: AppColors.backgroundColor,
                                 contentPadding: EdgeInsets.symmetric(
                                   vertical: height * 0.02,
-                                  // Padding proportional to height
                                   horizontal: width * 0.04,
                                 ),
                                 counterText: '',
@@ -123,7 +130,6 @@ class LoginScreen extends StatelessWidget {
                                 viewModel.setPhone(value);
                               },
                             ),
-
                             SizedBox(height: height * 0.03),
                             // Send OTP Button
                             Container(
@@ -132,33 +138,33 @@ class LoginScreen extends StatelessWidget {
                                 onPressed: viewModel.isLoading
                                     ? null
                                     : () async {
-                                        await viewModel.login();
-                                        if (viewModel.successMessage != null) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              content: Text(
-                                                  viewModel.successMessage!),
-                                              backgroundColor:
-                                                  AppColors.primaryColor,
-                                            ),
-                                          );
-                                          Navigator.pushReplacementNamed(
-                                            context,
-                                            AppRoutes.VERIFY,
-                                          );
-                                        } else if (viewModel
-                                            .errorMessage.isNotEmpty) {
-                                          ScaffoldMessenger.of(context)
-                                              .showSnackBar(
-                                            SnackBar(
-                                              content:
-                                                  Text(viewModel.errorMessage),
-                                              backgroundColor: Colors.red,
-                                            ),
-                                          );
-                                        }
-                                      },
+                                  await viewModel.login();
+                                  if (viewModel.successMessage != null) {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(
+                                      SnackBar(
+                                        content: Text(
+                                            viewModel.successMessage!),
+                                        backgroundColor:
+                                        AppColors.primaryColor,
+                                      ),
+                                    );
+                                    Navigator.pushReplacementNamed(
+                                      context,
+                                      AppRoutes.VERIFY,
+                                    );
+                                  } else if (viewModel
+                                      .errorMessage.isNotEmpty) {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(
+                                      SnackBar(
+                                        content:
+                                        Text(viewModel.errorMessage),
+                                        backgroundColor: Colors.red,
+                                      ),
+                                    );
+                                  }
+                                },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: AppColors.primaryColor,
                                   foregroundColor: Colors.white,
@@ -172,7 +178,7 @@ class LoginScreen extends StatelessWidget {
                                 child: Text(
                                   AppStrings.sentOtp,
                                   style: TextStyle(
-                                    fontSize: width * 0.05, // Button text size
+                                    fontSize: width * 0.05,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),

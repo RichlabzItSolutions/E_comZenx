@@ -5,6 +5,7 @@ import 'package:hygi_health/viewmodel/CartProvider.dart';
 import 'package:hygi_health/viewmodel/base_view_%20model.dart';
 import 'package:hygi_health/viewmodel/category_view_model.dart';
 import 'package:hygi_health/viewmodel/delivery_address_viewmodel.dart';
+import 'package:hygi_health/viewmodel/help_center_viewmodel.dart';
 import 'package:hygi_health/viewmodel/location_view_model.dart';
 import 'package:hygi_health/viewmodel/myaccount_view_Model.dart';
 import 'package:hygi_health/viewmodel/notification_viewmodel.dart';
@@ -40,6 +41,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) =>OrderSummaryViewModel()),
         ChangeNotifierProvider(create: (_) =>CartProvider()),
         ChangeNotifierProvider(create: (_) =>ProfileViewModel()),
+        ChangeNotifierProvider(create: (_) => HelpCenterViewModel()),
 
         // Add other providers here if needed
       ],

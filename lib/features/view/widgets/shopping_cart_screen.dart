@@ -20,6 +20,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
     final viewModel =
     Provider.of<ShoppingCartViewModel>(context, listen: false);
     viewModel.fetchCartItems();
+    viewModel.fetchMinAmount();
   }
 
   @override
@@ -318,7 +319,9 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
               child: Column(
                 children: [
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: viewModel.finalAmount < (viewModel.minAmount is num ? viewModel.minAmount : 0)
+                        ? null // Disable the button if total is less than min amount
+                        : () {
                       Navigator.pushNamed(
                         context,
                         AppRoutes.DeliveryAddress,
@@ -326,12 +329,27 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
                       );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.primaryColor,
+                      backgroundColor: viewModel.subTotal < (viewModel.minAmount is num ? viewModel.minAmount : 0)
+                          ? Colors.grey // Disabled button color
+                          : AppColors.primaryColor, // Enabled button color
                       minimumSize: const Size(double.infinity, 50),
                     ),
-                    child: const Text('Place Order',
-                        style: TextStyle(fontSize: 18, color: Colors.white)),
+
+                  child: Text(
+                    // Check if the final amount is less than the minimum amount and display appropriate text
+                    viewModel.subTotal < (viewModel.minAmount is num ? viewModel.minAmount : 0)
+                        ? 'Minimum order amount is ₹${(viewModel.minAmount is num ? viewModel.minAmount : 0)}'
+                        : 'Place Order',
+
+                    style: TextStyle(
+                      fontSize: 18,
+                      // Check if the final amount is less than the minimum amount and set appropriate color
+                      color: viewModel.subTotal < (viewModel.minAmount is num ? viewModel.minAmount : 0)
+                          ? Colors.black // Warning color (when minAmount is not met)
+                          : Colors.white, // Normal color (when minAmount is met)
+                    ),
                   ),
+    ),
                   const SizedBox(height: 10),
                 ],
               ),
@@ -408,4 +426,7 @@ class _ShoppingCartScreenState extends State<ShoppingCartScreen> {
       },
     );
   }
+
+
+
 }

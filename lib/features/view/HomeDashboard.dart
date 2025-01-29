@@ -50,8 +50,9 @@ class _HomePageState extends State<HomePage> {
       Provider.of<CategoryViewModel>(context, listen: false);
       final cartProvider = Provider.of<CartProvider>(context, listen: false);
       await Future.wait([
-        categoryViewModel.fetchCategories(),
         cartProvider.fetchCartData(),
+        categoryViewModel.fetchCategories(),
+
       ]);
     } catch (e) {
       // Handle error here (e.g., show a snack bar or a message)
@@ -326,6 +327,23 @@ class _HeaderSectionState extends State<HeaderSection> {
   void initState() {
     super.initState();
     _initializeLocation();
+
+
+
+  }
+  Future<void> initializeData() async {
+    try {
+      final categoryViewModel =
+      Provider.of<CategoryViewModel>(context, listen: false);
+      final cartProvider = Provider.of<CartProvider>(context, listen: false);
+      await Future.wait([
+        cartProvider.fetchCartData(),
+        categoryViewModel.fetchCategories(),
+      ]);
+    } catch (e) {
+      // Handle error here (e.g., show a snack bar or log the error)
+      print('Error during fetch: $e');
+    }
   }
 
   Future<void> _initializeLocation() async {
@@ -338,9 +356,9 @@ class _HeaderSectionState extends State<HeaderSection> {
     }
 
     final prefs = await SharedPreferences.getInstance();
-    final locationId = prefs.getInt('location') ?? 0;
+    final locationId = prefs.getInt('locationId') ?? 0;
 
-    if (locationId != 0) {
+    if (locationId ==1) {
       final location = locationViewModel.locations.firstWhere(
           (loc) => loc.id == locationId,
           orElse: () => Location(
@@ -355,14 +373,13 @@ class _HeaderSectionState extends State<HeaderSection> {
     } else {
       showLocationPopup(context); // Show location popup if not set
     }
+
   }
 
   @override
   Widget build(BuildContext context) {
     final locationViewModel = Provider.of<LocationViewModel>(context);
-    final cartProvider =
-        Provider.of<CartProvider>(context); // Get cartProvider here
-
+    final cartProvider = Provider.of<CartProvider>(context); // Get cartProvider here
     if (locationViewModel.isLoading) {
       return Center(child: CircularProgressIndicator());
     }

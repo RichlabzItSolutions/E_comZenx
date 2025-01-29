@@ -22,6 +22,8 @@ class LocationViewModel extends ChangeNotifier {
 
     try {
       _locations = await authService.fetchLocations();
+
+
     } catch (error) {
       _errorMessage = error.toString();
     } finally {

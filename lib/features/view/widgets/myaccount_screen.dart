@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:hygi_health/features/view/BaseScreen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../common/Utils/app_colors.dart';
 import '../../../routs/Approuts.dart';
 import '../../../viewmodel/profile_view_model.dart';
 
@@ -25,16 +25,39 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BaseScreen(
-      title: 'My Account',
-      showCartIcon: false,
-      showShareIcon: false,
-      child: Consumer<ProfileViewModel>(
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: AppColors.backgroundColor,
+        elevation: 1,
+        leading: GestureDetector(
+          onTap: () {
+            Navigator.pushReplacementNamed(context, AppRoutes.HOME); // Handles back navigation
+          },
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle, // Circular shape
+            ),
+            child: Image.asset(
+              'assets/backarrow.png', // Path to custom icon
+              height: 24,
+              width: 24,
+              fit: BoxFit.contain,
+            ),
+          ),
+        ),
+        title: const Text(
+          'My Account',
+          style: TextStyle(color: Colors.black),
+        ),
+      ),
+      body: Consumer<ProfileViewModel>(
         builder: (context, profileViewModel, child) {
           // Check if data is loading
           if (profileViewModel.isLoading) {
             return const Center(child: CircularProgressIndicator());
           }
+
           return Column(
             children: [
               // Profile Header
@@ -81,7 +104,6 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
                 ),
               ),
               // Options List
-              // Options List
               Expanded(
                 child: ListView(
                   children: [
@@ -118,9 +140,19 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
                     _buildDivider(),
                     ListTile(
                       leading: Image.asset("assets/privacy.png"),
-                      title: const Text('Privacy Policy', style: TextStyle(color: Colors.black)),
+                      title: const Text('Help & Support', style: TextStyle(color: Colors.black)),
                       trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                       onTap: () {},
+                    ),
+                    _buildDivider(),
+
+                    ListTile(
+                      leading: Image.asset("assets/privacy.png"),
+                      title: const Text('Privacy Policy', style: TextStyle(color: Colors.black)),
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                      onTap: () {
+                        Navigator.pushNamed(context, AppRoutes.Help_Support);
+                      },
                     ),
                     _buildDivider(),
                     ListTile(
@@ -139,6 +171,7 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
       ),
     );
   }
+
   Widget _buildDivider() {
     return const Padding(
       padding: EdgeInsets.symmetric(horizontal: 16),
@@ -149,6 +182,7 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
       ),
     );
   }
+
   Future<void> _logout(BuildContext context) async {
     bool? confirmed = await showDialog<bool>(
       context: context,

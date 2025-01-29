@@ -82,9 +82,9 @@ class DeliveryViewModel extends ChangeNotifier {
 
       // Create ConfirmOrder object with only addressId
       final order = ConfirmOrder(
-        userId: userId.toString(),
-        addressId: selectedAddress.id.toString(), // Only sending addressId now
-        paymentMode: paymentMode,
+        userId: userId,
+        addressId: selectedAddress.id, // Only sending addressId now
+        paymentMode: "1",
         locationId: locationID??0, // Sending locationId now
 
       );

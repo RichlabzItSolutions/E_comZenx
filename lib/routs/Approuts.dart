@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:hygi_health/features/view/widgets/0rder_summary_screen.dart';
 import 'package:hygi_health/features/view/widgets/globalProductSearch.dart';
+import 'package:hygi_health/features/view/widgets/help_center_screen.dart';
 import '../data/model/category_model.dart';
 import '../features/view/HomeDashboard.dart';
 import '../features/view/LoginScreen.dart';
@@ -39,6 +40,7 @@ class AppRoutes {
   static const String ORDER_DETAILS = '/OrderSummaryScreen';
   static const String GLOBAL_SEARCH = '/GlobalProductList';
   static const String  PROFILE = '/EditProfileScreen';
+  static const String Help_Support = '/HelpCenterScreen';
 
   // Add more routes as needed
 
@@ -114,7 +116,7 @@ class AppRoutes {
       AppRoutes.ORDER_DETAILS: (context) => OrderSummaryScreen(),
       AppRoutes.GLOBAL_SEARCH: (context) => GlobalProductList(),
       AppRoutes.PROFILE: (context) => EditProfileScreen(), // Add EditProfileScreen here if needed
-
+      AppRoutes.Help_Support:(context) => HelpCenterScreen(),
       // Define other routes here
     };
   }

@@ -19,6 +19,9 @@ class _OrderTabsViewState extends State<OrderTabsView>
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
     _tabController.addListener(_onTabChanged); // Listen for tab changes
+    Future.delayed(Duration.zero, () {
+      Provider.of<OrderViewModel>(context, listen: false).fetchOrdersForTab();
+    });
   }
 
   // Function to handle tab changes

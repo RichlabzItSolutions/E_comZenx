@@ -71,8 +71,8 @@ class Variant {
   final List<ImageModel> images;
 
   // New fields
-  final int addedToCart;  // Quantity added to cart (nullable)
-  final int qty;          // Quantity (nullable)
+  late final int addedToCart;  // Quantity added to cart (nullable)
+  late final int qty;          // Quantity (nullable)
 
   Variant({
     required this.variantId,

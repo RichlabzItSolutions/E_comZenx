@@ -11,10 +11,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../common/constants/constans.dart';
 import '../../model/CartResponse.dart';
 import '../../model/DeliveryAddress.dart';
+import '../../model/HelpCenter.dart';
 import '../../model/category_model.dart';
 import '../../model/confirm_order_response.dart';
 import '../../model/location_model.dart';
 
+import '../../model/minamountresponse.dart';
 import '../../model/order_summary_model.dart';
 import '../../model/product_model.dart';
 import '../../model/request_user_data.dart';
@@ -228,11 +230,14 @@ class ApiService {
 
       // Retrieve the user ID from SharedPreferences and convert to an integer
       final String? userIdString = prefs.getString('userId');
-      final int? userId = userIdString != null ? int.tryParse(userIdString) : null;
+      final int? userId = userIdString != null
+          ? int.tryParse(userIdString)
+          : null;
 
       // Check if userId is null after conversion
       if (userId == null) {
-        throw Exception('User ID is not available or invalid in SharedPreferences');
+        throw Exception(
+            'User ID is not available or invalid in SharedPreferences');
       }
 
       // Add the user ID to the payload
@@ -300,17 +305,21 @@ class ApiService {
 
       // Retrieve the user ID from SharedPreferences and convert to an integer
       final String? userIdString = prefs.getString('userId');
-      final int? userId = userIdString != null ? int.tryParse(userIdString) : null;
+      final int? userId = userIdString != null
+          ? int.tryParse(userIdString)
+          : null;
 
       // Check if userId is null after conversion
       if (userId == null) {
-        throw Exception('User ID is not available or invalid in SharedPreferences');
+        throw Exception(
+            'User ID is not available or invalid in SharedPreferences');
       }
       // Define the body with productId and variantId
       final body = {
         'productId': productId,
         'variantId': variantId,
-        'userId': userId, // Retrieve the user ID from SharedPreferences and use it in the request
+        'userId': userId,
+        // Retrieve the user ID from SharedPreferences and use it in the request
       };
 
       // Configure Dio to use the correct endpoint and handle the request
@@ -640,7 +649,8 @@ class ApiService {
       // Create the request body with categoryId
       final Map<String, dynamic> requestBody = {
         'categoryId': categoryId,
-        'searchSubCategory': searchSubCategory ?? ' ', // If searchSubCategory is null, use an empty string
+        'searchSubCategory': searchSubCategory ?? ' ',
+        // If searchSubCategory is null, use an empty string
       };
 
       final String url = '${AppConstants.baseUrl}fetchSubCategories';
@@ -824,7 +834,8 @@ class ApiService {
         return (response.data);
       } else {
         // Handle other HTTP status codes if needed
-        throw Exception('Failed to load cart, status code: ${response.statusCode}');
+        throw Exception(
+            'Failed to load cart, status code: ${response.statusCode}');
       }
     } catch (e) {
       // Catch any errors such as network issues or invalid response format
@@ -835,18 +846,20 @@ class ApiService {
 
 // Method to fetch the user profile
   Future<Map<String, dynamic>> fetchUserProfile() async {
-
     String url = '${AppConstants
         .baseUrl}fetchProfile'; // Use the correct endpoint
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
     // Retrieve the user ID from SharedPreferences and convert to an integer
     final String? userIdString = prefs.getString('userId');
-    final int? userId = userIdString != null ? int.tryParse(userIdString) : null;
+    final int? userId = userIdString != null
+        ? int.tryParse(userIdString)
+        : null;
 
     // Check if userId is null after conversion
     if (userId == null) {
-      throw Exception('User ID is not available or invalid in SharedPreferences');
+      throw Exception(
+          'User ID is not available or invalid in SharedPreferences');
     }
     try {
       final response = await _dio.post(url,
@@ -864,9 +877,12 @@ class ApiService {
       throw Exception("Error fetching profile: $error");
     }
   }
+
   // Update User Profile
-  Future<Map<String, dynamic>> updateUserProfile(Map<String, dynamic> userData) async {
-    String url = '${AppConstants.baseUrl}updateProfile'; // Use the correct endpoint
+  Future<Map<String, dynamic>> updateUserProfile(
+      Map<String, dynamic> userData) async {
+    String url = '${AppConstants
+        .baseUrl}updateProfile'; // Use the correct endpoint
 
     try {
       final response = await _dio.post(
@@ -884,10 +900,74 @@ class ApiService {
     }
   }
 
+// Function to submit help request
+  Future<bool> submitHelpRequest(Map<String, dynamic> data) async {
+    String url = '${AppConstants.baseUrl}addSupport';
+    try {
+      final response = await _dio.post(
+        url,
+        data: jsonEncode(data),
+      );
+      if (response.statusCode == 200) {
+        print("Request submitted successfully: ${response.data}");
+        return true; // Return true when request is successful
+      } else {
+        print('Failed to submit request: ${response.data}');
+        return false; // Return false if the response code is not 200
+      }
+    } catch (e) {
+      print('Error submitting request: $e');
+      throw Exception('Error submitting request: $e');
+    }
+  }
+
+  // get minimum Amount
+
+  Future<MinAmountResponse> getMinAmount() async {
+    final String url = '${AppConstants.baseUrl}getMinAmount';
+
+    try {
+      final response = await _dio.get(url);
+      if (response.statusCode == 200) {
+        // Decode the response body as JSON
+        final Map<String, dynamic> responseBody = response.data;
+
+        // Parse the JSON into MinAmountResponse object
+        return MinAmountResponse.fromJson(responseBody);
+      } else {
+        throw Exception('Failed to load min amount: ${response.statusMessage}');
+      }
+    } catch (e) {
+      throw Exception('Error fetching min amount: $e');
+    }
+  }
+
+
+  // Method to fetch Help Center details from the API
+  Future<HelpCenter?> fetchHelpCenter() async {
+    try {
+      final String url = '${AppConstants.baseUrl}getHelpCenter';
+      final response = await _dio.get(url);
+      if (response.statusCode == 200) {
+        final responseData = response.data;
+        // Check if the API response contains the data structure as expected
+        if (responseData['success'] == true && responseData['data'] != null) {
+          return HelpCenter.fromJson(responseData['data']['helpcenter']);
+        } else {
+          // Handle the case where the API response is not as expected
+          print('Failed to fetch HelpCenter data');
+          return null;
+        }
+      } else {
+        print('Failed to load HelpCenter data');
+        return null;
+      }
+    } catch (e) {
+      print('Error fetching HelpCenter: $e');
+      return null;
+    }
+  }
 }
-
-
-
 
 
 

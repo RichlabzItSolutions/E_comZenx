@@ -28,9 +28,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
+        leading: GestureDetector(
+          onTap: () {
+            Navigator.pop(context); // Navigate back
+          },
+          child: Container(
+            padding: EdgeInsets.all(8),
+            child: Image.asset(
+              'assets/backarrow.png',
+              height: 24,
+              width: 24,
+              fit: BoxFit.contain,
+            ),
+          ),
         ),
         elevation: 0,
         backgroundColor: Colors.transparent,

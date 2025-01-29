@@ -38,17 +38,13 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: const Color(0xFFFFFFFF), // Set the background color to white
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Logo Image that adapts to device dimensions
-            Image.asset(
-              'assets/splash.png', // Path to the image in the assets folder
-              width: MediaQuery.of(context).size.width, // Full device width
-              height: MediaQuery.of(context).size.height * 0.6, // 60% of device height
-              fit: BoxFit.contain, // Scale image to fill both dimensions while preserving aspect ratio
-            ),
-          ],
+        child: Container(
+          width: MediaQuery.of(context).size.width, // Full device width
+          height: MediaQuery.of(context).size.height, // Full device height
+          child: Image.asset(
+            'assets/splash.png', // Path to the image in the assets folder
+            fit: BoxFit.cover, // Ensures the image covers the entire container area
+          ),
         ),
       ),
     );

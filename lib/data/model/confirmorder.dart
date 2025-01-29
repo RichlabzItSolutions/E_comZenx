@@ -1,7 +1,7 @@
 class ConfirmOrder {
-  final String userId;
-  final String addressId;
-  final int paymentMode;
+  final int userId;
+  final int addressId;
+  final String paymentMode;
   final int locationId;
 
 

@@ -36,7 +36,7 @@ class Order {
   final int? totalItems; // Changed from String? to int?
   final String gst;
   final String discount;
-  final double finalAmount;
+  final String finalAmount;
   final String shippingCharges;
   final double payableAmount;
   final int paymentStatus;
@@ -86,7 +86,7 @@ class Order {
       totalItems: (json['totalItems'] as num?)?.toInt(), // Safely parse as int
       gst: json['gst'] as String? ?? '',
       discount: json['discount'] as String? ?? '',
-      finalAmount: (json['finalAmount'] as num?)?.toDouble() ?? 0.0,
+      finalAmount: json['finalAmount'] as String? ?? '',
       shippingCharges: json['shippingCharges'] as String? ?? '',
       payableAmount: (json['PayableAmount'] as num?)?.toDouble() ?? 0.0,
       paymentStatus: json['paymentStatus'] as int? ?? 0,

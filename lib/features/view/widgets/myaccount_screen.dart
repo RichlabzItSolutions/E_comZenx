@@ -142,7 +142,9 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
                       leading: Image.asset("assets/privacy.png"),
                       title: const Text('Help & Support', style: TextStyle(color: Colors.black)),
                       trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.pushNamed(context, AppRoutes.Help_Support);
+                      },
                     ),
                     _buildDivider(),
 
@@ -151,7 +153,16 @@ class _MyAccountScreenState extends State<MyAccountScreen> {
                       title: const Text('Privacy Policy', style: TextStyle(color: Colors.black)),
                       trailing: const Icon(Icons.arrow_forward_ios, size: 16),
                       onTap: () {
-                        Navigator.pushNamed(context, AppRoutes.Help_Support);
+
+                      },
+                    ),
+                    _buildDivider(),
+                    ListTile(
+                      leading: Image.asset("assets/privacy.png"),
+                      title: const Text('Delivery Slab Info', style: TextStyle(color: Colors.black)),
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                      onTap: () {
+                        Navigator.pushNamed(context, AppRoutes.SLOB);
                       },
                     ),
                     _buildDivider(),

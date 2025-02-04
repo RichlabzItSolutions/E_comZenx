@@ -131,7 +131,7 @@ class _OrderCardState extends State<OrderCard> {
         ),
         Expanded(
           child: Text(
-            'Total Amount: ₹${widget.order.totalAmount}',
+            'Total Amount: ₹${widget.order.payableAmount}',
             style: const TextStyle(fontSize: 14, color: Colors.black),
             overflow: TextOverflow.ellipsis, // Ensures text does not overflow
             textAlign: TextAlign.end, // Align total payment text to the right

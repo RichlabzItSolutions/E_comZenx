@@ -15,6 +15,7 @@ import 'package:hygi_health/viewmodel/product_view_model.dart';
 import 'package:hygi_health/viewmodel/profile_view_model.dart';
 import 'package:hygi_health/viewmodel/shopping_cart_view_model.dart';
 import 'package:hygi_health/viewmodel/slide_view_model.dart';
+import 'package:hygi_health/viewmodel/slob_viewmodel.dart';
 import 'package:hygi_health/viewmodel/subcategory_view_model.dart';
 import 'package:hygi_health/viewmodel/verify_otp_view_model.dart';
 import 'routs/Approuts.dart';
@@ -42,6 +43,8 @@ void main() async {
         ChangeNotifierProvider(create: (_) =>CartProvider()),
         ChangeNotifierProvider(create: (_) =>ProfileViewModel()),
         ChangeNotifierProvider(create: (_) => HelpCenterViewModel()),
+        ChangeNotifierProvider(create: (_) => SlobViewModel()),
+
 
         // Add other providers here if needed
       ],

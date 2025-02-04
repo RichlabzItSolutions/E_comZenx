@@ -17,6 +17,7 @@ import '../features/view/widgets/delivery_address_screen.dart';
 import '../features/view/widgets/myaccount_screen.dart';
 import '../features/view/widgets/orderscreen.dart';
 import '../features/view/widgets/shopping_cart_screen.dart';
+import '../features/view/widgets/slob_screen..dart';
 import '../splashscreen.dart';
 
 class AppRoutes {
@@ -41,6 +42,7 @@ class AppRoutes {
   static const String GLOBAL_SEARCH = '/GlobalProductList';
   static const String  PROFILE = '/EditProfileScreen';
   static const String Help_Support = '/HelpCenterScreen';
+  static const String SLOB = '/SlobScreen';
 
   // Add more routes as needed
 
@@ -117,6 +119,7 @@ class AppRoutes {
       AppRoutes.GLOBAL_SEARCH: (context) => GlobalProductList(),
       AppRoutes.PROFILE: (context) => EditProfileScreen(), // Add EditProfileScreen here if needed
       AppRoutes.Help_Support:(context) => HelpCenterScreen(),
+      AppRoutes.SLOB: (context) => SlobScreen(), // Add SlobScreen here
       // Define other routes here
     };
   }

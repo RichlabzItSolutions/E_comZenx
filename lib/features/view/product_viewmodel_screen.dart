@@ -4,7 +4,7 @@ import 'package:hygi_health/data/model/product_view.dart';
 import 'package:provider/provider.dart';
 import 'package:hygi_health/viewmodel/product_view_model.dart';
 import 'package:hygi_health/features/view/BaseScreen.dart';
-import 'package:hygi_health/routs/Approuts.dart';
+
 
 import '../../common/Utils/app_colors.dart';
 
@@ -41,53 +41,53 @@ class _ProductViewmodelScreenState extends State<ProductViewmodelScreen> {
     });
     quantityController = TextEditingController(text: '1');
     // Fetch product details after dependencies are initialized
-    // _fetchProductDetails();
+    _fetchProductDetails();
   }
 
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    // Ensure that you only access context-dependent operations after dependencies have been set up.
-    final arguments =
-    ModalRoute
-        .of(context)
-        ?.settings
-        .arguments as Map<String, String>?;
-    if (arguments != null) {
-      // Ensure arguments are parsed as integers
-      final productIdString = arguments['productId'];
-      final variantIdString = arguments['variantId'];
-      if (productIdString != null && variantIdString != null) {
-        final productId = (productIdString);
-        final variantId = (variantIdString);
-        // Initialize the ProductViewModel and fetch product details
-        final viewModel = Provider.of<ProductViewModel>(context, listen: false);
-        viewModel.fetchProductDetails(productId, variantId);
-      } else {
-        // Handle missing arguments if necessary
-        print("Missing productId or variantId");
-      }
-    }
-  }
-
-  // void _fetchProductDetails() {
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   // Ensure that you only access context-dependent operations after dependencies have been set up.
   //   final arguments =
-  //   ModalRoute.of(context)?.settings.arguments as Map<String, String>?;
+  //   ModalRoute
+  //       .of(context)
+  //       ?.settings
+  //       .arguments as Map<String, String>?;
   //   if (arguments != null) {
+  //     // Ensure arguments are parsed as integers
   //     final productIdString = arguments['productId'];
   //     final variantIdString = arguments['variantId'];
   //     if (productIdString != null && variantIdString != null) {
-  //       productId = productIdString;
-  //       variantId = variantIdString;
+  //       final productId = (productIdString);
+  //       final variantId = (variantIdString);
   //       // Initialize the ProductViewModel and fetch product details
   //       final viewModel = Provider.of<ProductViewModel>(context, listen: false);
   //       viewModel.fetchProductDetails(productId, variantId);
   //     } else {
+  //       // Handle missing arguments if necessary
   //       print("Missing productId or variantId");
   //     }
   //   }
   // }
+
+  void _fetchProductDetails() {
+    final arguments =
+    ModalRoute.of(context)?.settings.arguments as Map<String, String>?;
+    if (arguments != null) {
+      final productIdString = arguments['productId'];
+      final variantIdString = arguments['variantId'];
+      if (productIdString != null && variantIdString != null) {
+        productId = productIdString;
+        variantId = variantIdString;
+        // Initialize the ProductViewModel and fetch product details
+        final viewModel = Provider.of<ProductViewModel>(context, listen: false);
+        viewModel.fetchProductDetails(productId, variantId);
+      } else {
+        print("Missing productId or variantId");
+      }
+    }
+  }
 
   @override
   void dispose() {

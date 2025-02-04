@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:hygi_health/common/Utils/app_colors.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../../viewmodel/help_center_viewmodel.dart';
 import 'package:permission_handler/permission_handler.dart';
+import '../../../viewmodel/help_center_viewmodel.dart';
+
 class HelpCenterScreen extends StatefulWidget {
   @override
   _HelpCenterScreenState createState() => _HelpCenterScreenState();
@@ -13,22 +14,22 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
   @override
   void initState() {
     super.initState();
-    // Fetch help center details only once when the screen is loaded
     final viewModel = Provider.of<HelpCenterViewModel>(context, listen: false);
     viewModel.fetchHelpCenterDetails();
   }
 
-  // Function to make a phone call
+  // Function to make a phone call with permission handling
   Future<void> _makePhoneCall(String phoneNumber) async {
-    if (await Permission.phone.request().isGranted) {
-      final Uri phoneUri = Uri(scheme: 'tel', path: phoneNumber);
-      if (await canLaunch(phoneUri.toString())) {
-        await launch(phoneUri.toString());
+    var status = await Permission.phone.request();
+    if (status.isGranted) {
+      final Uri phoneUri = Uri.parse("tel:$phoneNumber");
+      if (await canLaunchUrl(phoneUri)) {
+        await launchUrl(phoneUri);
       } else {
-        print('Could not launch phone');
+        print('Could not launch phone call');
       }
     } else {
-      print('Permission to make phone calls denied');
+      print('Phone call permission denied');
     }
   }
 
@@ -39,8 +40,8 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
       path: emailAddress,
       queryParameters: {'subject': 'Help & Support Inquiry'},
     );
-    if (await canLaunch(emailUri.toString())) {
-      await launch(emailUri.toString());
+    if (await canLaunchUrl(emailUri)) {
+      await launchUrl(emailUri);
     } else {
       print('Could not launch email');
     }
@@ -53,9 +54,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
     return Scaffold(
       appBar: AppBar(
         leading: GestureDetector(
-          onTap: () {
-            Navigator.pop(context); // Navigate back
-          },
+          onTap: () => Navigator.pop(context),
           child: Container(
             padding: const EdgeInsets.all(8),
             child: Image.asset(
@@ -104,9 +103,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
             // Submit Button
             ElevatedButton(
               onPressed: () async {
-                // Submit the form
                 await viewModel.submitForm(context);
-                // Clear the form data after submission
                 viewModel.subjectController.clear();
                 viewModel.messageController.clear();
               },
@@ -120,7 +117,7 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
               ),
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size(double.infinity, 50),
-                backgroundColor: AppColors.primaryColor, // Button background color
+                backgroundColor: AppColors.primaryColor,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
@@ -128,21 +125,17 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
             ),
             const SizedBox(height: 16),
 
-            // Display the Email and Mobile below the button
+            // Contact Details Section
             if (viewModel.helpCenter != null) ...[
-              const SizedBox(height: 16), // Space between button and contact details
+              const SizedBox(height: 16),
+
               // Email Section
               GestureDetector(
-                onTap: () {
-                  _sendEmail(viewModel.helpCenter!.email);
-                },
+                onTap: () => _sendEmail(viewModel.helpCenter!.email),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(
-                      Icons.email, // Email icon
-                      color: Colors.black,
-                    ),
+                    const Icon(Icons.email, color: Colors.black),
                     const SizedBox(width: 8),
                     Text(
                       viewModel.helpCenter!.email,
@@ -156,18 +149,14 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                 ),
               ),
               const SizedBox(height: 16),
+
               // Phone Number Section
               GestureDetector(
-                onTap: () {
-                  _makePhoneCall(viewModel.helpCenter!.mobile);
-                },
+                onTap: () => _makePhoneCall(viewModel.helpCenter!.mobile),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Icon(
-                      Icons.phone, // Phone icon
-                      color: Colors.black,
-                    ),
+                    const Icon(Icons.phone, color: Colors.black),
                     const SizedBox(width: 8),
                     Text(
                       viewModel.helpCenter!.mobile,
@@ -180,6 +169,31 @@ class _HelpCenterScreenState extends State<HelpCenterScreen> {
                   ],
                 ),
               ),
+              const SizedBox(height: 16),
+
+              // Address Section
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center, // Ensures both are aligned
+                children: [
+                  const Icon(Icons.location_on, color: Colors.black),
+                  const SizedBox(width: 8),
+                  Flexible( // Ensures the text wraps properly instead of overflowing
+                    child: Text(
+                      viewModel.helpCenter?.address ?? "No Address Available", // Handle null safety
+                      textAlign: TextAlign.center, // Centers the text
+                      style: const TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              )
+
+
             ],
           ],
         ),

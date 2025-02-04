@@ -2,22 +2,22 @@ class HelpCenter {
   final int id;
   final String email;
   final String mobile;
-  final String? address; // Nullable field
+  final String address; // Make it non-nullable but provide a default value
 
   HelpCenter({
     required this.id,
     required this.email,
     required this.mobile,
-    this.address,
+    required this.address,
   });
 
   // Factory method to create an instance of HelpCenter from JSON
   factory HelpCenter.fromJson(Map<String, dynamic> json) {
     return HelpCenter(
-      id: json['id'],
-      email: json['email'],
-      mobile: json['mobile'],
-      address: json['address'], // Nullable
+      id: json['id'] ?? 0, // Ensure id is not null
+      email: json['email'] ?? '', // Ensure email is not null
+      mobile: json['mobile'] ?? '', // Ensure mobile is not null
+      address: json['address'] ?? 'Not Available', // Provide a default value if null
     );
   }
 
@@ -27,7 +27,7 @@ class HelpCenter {
       'id': id,
       'email': email,
       'mobile': mobile,
-      'address': address, // Nullable field can be null
+      'address': address, // No need for null check since it's now non-nullable
     };
   }
 }

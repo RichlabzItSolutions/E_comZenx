@@ -7,7 +7,6 @@ import 'package:hygi_health/data/model/product_view.dart';
 import 'package:hygi_health/data/model/removecartItemrequest.dart';
 import 'package:hygi_health/data/model/verify_otp_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import '../../../common/constants/constans.dart';
 import '../../model/CartResponse.dart';
 import '../../model/DeliveryAddress.dart';
@@ -15,12 +14,11 @@ import '../../model/HelpCenter.dart';
 import '../../model/category_model.dart';
 import '../../model/confirm_order_response.dart';
 import '../../model/location_model.dart';
-
 import '../../model/minamountresponse.dart';
 import '../../model/order_summary_model.dart';
 import '../../model/product_model.dart';
 import '../../model/request_user_data.dart';
-
+import '../../model/slob_model.dart';
 import '../../model/subcategory_model.dart';
 import '../../model/verify_otp_response_model.dart';
 
@@ -156,8 +154,13 @@ class ApiService {
   // Fetch banners from the API
   Future<List<String>> fetchBanners() async {
     try {
-      final response = await _dio.get('${AppConstants
-          .baseUrl}fetchSliders'); // Replace with your API endpoint
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      // Retrieve the user ID from SharedPreferences and convert to an integer
+      // final String? userIdString = prefs.getString('userId');
+      // final int? userId = userIdString != null
+      //     ? int.tryParse(userIdString)
+      //     : null;
+      final response = await _dio.get('${AppConstants.baseUrl}fetchSliders',); // Replace with your API endpoint
 
       // Check if the status code is 200
       if (response.statusCode == 200) {
@@ -965,6 +968,18 @@ class ApiService {
     } catch (e) {
       print('Error fetching HelpCenter: $e');
       return null;
+    }
+  }
+// get Slob details
+  Future<List<Slob>> fetchSlobs() async {
+    final String url = '${AppConstants.baseUrl}getSlobs';
+    final response = await _dio.get(url);
+    if (response.statusCode == 200) {
+      final data = response.data;
+      List<dynamic> slobsJson = data['data']['slobs'];
+      return slobsJson.map((json) => Slob.fromJson(json)).toList();
+    } else {
+      throw Exception('Failed to load Slobs');
     }
   }
 }

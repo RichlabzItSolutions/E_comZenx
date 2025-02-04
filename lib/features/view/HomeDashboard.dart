@@ -26,6 +26,11 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0; // Track selected bottom navigation tab
   bool isFetching = false; // Flag to track if request is in progress
   DateTime? _lastPressedTime;
+  @override
+  void initState() {
+    super.initState();
+    _fetchInitialData(); // Fetch cart and categories data at startup
+  }
 
   @override
   void dispose() {
@@ -37,6 +42,29 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+  Future<void> _fetchInitialData() async {
+    if (isFetching) return; // Prevent multiple requests
+    setState(() {
+      isFetching = true;
+    });
+
+    try {
+      final categoryViewModel =
+      Provider.of<CategoryViewModel>(context, listen: false);
+      final cartProvider = Provider.of<CartProvider>(context, listen: false);
+
+      await Future.wait([
+        cartProvider.fetchCartData(),
+        categoryViewModel.fetchCategories(),
+      ]);
+    } catch (e) {
+      print('Error during fetch: $e');
+    } finally {
+      setState(() {
+        isFetching = false;
+      });
+    }
   }
 
   Future<void> _handlePageRefresh() async {
@@ -347,34 +375,47 @@ class _HeaderSectionState extends State<HeaderSection> {
   }
 
   Future<void> _initializeLocation() async {
-    final locationViewModel =
-        Provider.of<LocationViewModel>(context, listen: false);
+    final locationViewModel = Provider.of<LocationViewModel>(context, listen: false);
 
-    // Check if locations have been fetched already
+    // Fetch locations if not already loaded
     if (locationViewModel.locations.isEmpty) {
       await locationViewModel.fetchLocations();
     }
 
     final prefs = await SharedPreferences.getInstance();
-    final locationId = prefs.getInt('locationId') ?? 0;
+    final locationId = prefs.getInt('location');
 
-    if (locationId ==1) {
+    if (locationViewModel.locations.length == 1) {
+      // If only one location exists, set it by default
+      final singleLocation = locationViewModel.locations.first;
+      setState(() {
+        _selectedLocation = singleLocation;
+      });
+
+      // Save it in SharedPreferences
+      prefs.setInt('location', singleLocation.id);
+    } else if (locationId != null && locationId > 0) {
+      // If a location is already set in SharedPreferences, use it
       final location = locationViewModel.locations.firstWhere(
-          (loc) => loc.id == locationId,
-          orElse: () => Location(
-              id: 0,
-              location: "Select Location",
-              clientLocationId: "",
-              status: 0,
-              createdOn: ""));
+            (loc) => loc.id == locationId,
+        orElse: () => Location(
+          id: 0,
+          location: "Select Location",
+          clientLocationId: "",
+          status: 0,
+          createdOn: "",
+        ),
+      );
+
       setState(() {
         _selectedLocation = location;
       });
     } else {
-      showLocationPopup(context); // Show location popup if not set
+      // Show location selection popup if no location is set
+      showLocationPopup(context);
     }
-
   }
+
 
   @override
   Widget build(BuildContext context) {
